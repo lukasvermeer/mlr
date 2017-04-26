@@ -7,6 +7,9 @@
 		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="js/mlr.js"></script>
 
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+
 		<script type="text/javascript">
 			$(function() {
 				$('#input').on('input', function() {
@@ -14,17 +17,22 @@
 					    t = new Text($(this).val(), mlr);
 					    t.autoSelectLowestFactors();
 					    s = t.generateMlrStats();
-				    	$('#output').text(JSON.stringify(s, undefined, 4));
-				    } else { $('#output').text('input empty'); }
+				    	$('#output').text(JSON.stringify(s, undefined, 4)).show();
+				    } else { $('#output').text('input empty').hide(); }
 				});
+				$('#output').hide();
 			});
 		</script>
 	</head>
 	<body>
-		<h1>MLR (Measure of Lexical Richness, versie 0.99b)</h1>
-		<p>Voor achtergronden en beschrijving: zie Vermeer, A. (2000). Lexicale rijkdom, tekstmoeilijkheid en woordenschatgrootte. Beschrijving van de MLR, een woordenschat-analyseprogramma. <i>Toegepaste TaalWetenschap in Artikelen</i>  64, 95-105   (<a href="http://let.uvt.nl/general/people/avermeer/mlr/mlrttwia64.PDF" target="_blank">PDF)</a>.  Let op! Dit artikel is de beschrijving van een vorige versie van de MLR. Nieuwe gebruiksaanwijzing volgt z.s.m. </p>
-		<p>Vul/Plak hier (liefst uit notepad, ivm rare codes en harde returns) een tekst in en klik op 'submit':</p>
-		<textarea id="input" rows="10" cols="80"></textarea>
-		<pre id="output"></pre>
+		<div class="container">
+			<h1>Measure of Lexical Richness <small>versie 0.99b</small></h1>
+			<p>Voor achtergronden en beschrijving: zie Vermeer, A. (2000). Lexicale rijkdom, tekstmoeilijkheid en woordenschatgrootte. Beschrijving van de MLR, een woordenschat-analyseprogramma. <i>Toegepaste TaalWetenschap in Artikelen</i>  64, 95-105   (<a href="http://let.uvt.nl/general/people/avermeer/mlr/mlrttwia64.PDF" target="_blank">PDF)</a>.  Let op! Dit artikel is de beschrijving van een vorige versie van de MLR. Nieuwe gebruiksaanwijzing volgt z.s.m.</p>
+			<div class="form-group">
+				<label for="input">Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst:</label>
+				<textarea id="input" class="form-control"></textarea>
+			</div>
+			<pre id="output" style="display: none"></pre>
+		</div>
 	</body>
 </html>
