@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="nl">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>MLR (Measure of Lexical Richness, versie 0.99b)</title>
+
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="js/mlr.js"></script>
+
+		<script type="text/javascript">
+			$(function() {
+				$('#input').on('input', function() {
+					if ($(this).val()) {
+					    t = new Text($(this).val(), mlr);
+					    t.autoSelectLowestFactors();
+					    s = t.generateMlrStats();
+				    	$('#output').text(JSON.stringify(s, undefined, 4));
+				    } else { $('#output').text('input empty'); }
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<h1>MLR (Measure of Lexical Richness, versie 0.99b)</h1>
+		<p>Voor achtergronden en beschrijving: zie Vermeer, A. (2000). Lexicale rijkdom, tekstmoeilijkheid en woordenschatgrootte. Beschrijving van de MLR, een woordenschat-analyseprogramma. <i>Toegepaste TaalWetenschap in Artikelen</i>  64, 95-105   (<a href="http://let.uvt.nl/general/people/avermeer/mlr/mlrttwia64.PDF" target="_blank">PDF)</a>.  Let op! Dit artikel is de beschrijving van een vorige versie van de MLR. Nieuwe gebruiksaanwijzing volgt z.s.m. </p>
+		<p>Vul/Plak hier (liefst uit notepad, ivm rare codes en harde returns) een tekst in en klik op 'submit':</p>
+		<textarea id="input" rows="10" cols="80"></textarea>
+		<pre id="output"></pre>
+	</body>
+</html>
