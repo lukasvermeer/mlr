@@ -57,7 +57,7 @@ var Text = function(i_o = "", mlr) {
 		
 		// store as a list of tokens with metadata
 		var t = [];
-		for (index = 0; index < split.length; ++index) { // for each word in the text
+		for (index = 0; split && index < split.length; ++index) { // for each word in the text
 			t.push(new Token(split[index], mlr)); // add a token to the array
 		}
 		return t;
@@ -72,150 +72,92 @@ var Text = function(i_o = "", mlr) {
 	this.autoSelectHighestFactors = function() { this.tokenlist.forEach(function(t) { t.autoSelectHighestFactor() }); }
 	
 	this.generateMlrStats = function() {
-		// TODO this thing is a hairy and literal translation from PHP. Could use some cleaning up.
-		var cnt_tokens = 0; // the amount not ignored of tokens in the text
-		var cnt_unique_tokens = 0; // the amount of unique tokens in the text
-		var cnt_unique_lemmas = 0; // the amount of unique lemmas in the text
-		var cnt_unique_lemmas_list_null = 0; // the amount of unique lemmas in the text from list 0 (unknown);
-		var cnt_ignored_tokens = 0; // the amount of ignored tokens in the text
-		var cnt_ignored_lemmas = 0; // the amount of ignored lemmas	
-		var cnt_unknown_tokens = 0; // the amount of tokens that are not known
-	
-		// list variables
-		var lemma_list = {}; // list of lists of counters per lemma sorted by factor
-		var token_list = {}; // list of lists of counters per lemma sorted by factor
-		var ignored_lemmas_list = [];
-	
-		// stat variables
-		var stat_percentage_tokens = []; // the percentage of tokens from list [i]
-		var stat_percentage_lemmas = []; // the percentage of lemmas from list [i]
+		var lists = ['0','1','2','3','4','5','6','7','8','9','known','total']; // enum of all lists.
+		var listStats = {}; // statistics for each list.
+		for (var l in lists) {
+			listStats[lists[l]] = {'totalLemmas': 0, 'lemmas': {}, 'totalTokens': 0, 'tokens': []};
+		}		
 		var stat_mlrws; // the actual mlr value
-		var stat_tokens_cover = []; // the coverage of the text by tokens from list [i]
-		var stat_lemmas_cover = [];	 // the coverage of the text by lemmas from list [i]
 
 		for (index = 0; index < this.tokenlist.length; ++index) { // for each word in the text
 			var t = this.tokenlist[index].t;
 			var l = this.tokenlist[index].getSelectedLemma();
 			var f = this.mlr.lemmas[l] || 0;
-		
-			// count ignored
-			if (this.tokenlist[index].ignore) {
-				cnt_ignored_tokens++;
-				f = 10;
-			}
-			else {
-				cnt_tokens++;
-			}
-		
-			// count unknown
-			if (f == 0) {
-				cnt_unknown_tokens++;
-			}
-			
-			// for lemma_list
-			if (lemma_list[f] && lemma_list[f][l]) {
-				lemma_list[f][l].push(t);
-			} else {
-				if (!lemma_list[f]) { lemma_list[f] = {}; }
-				if (!lemma_list[f][l]) { lemma_list[f][l] = []; }
-				lemma_list[f][l].push(t);
-				cnt_unique_lemmas++;
-				if (f == 0) {
-					cnt_unique_lemmas_list_null++;
+
+			if (!this.tokenlist[index].ignore) {
+				var list = ['total',f];
+				if (f > 0) { list.push('known'); };
+				for (var i in list) {
+					listStats[list[i]]['totalTokens']++;
+					listStats[list[i]]['tokens'].push(t);
+				
+					if (!listStats[list[i]]['lemmas'][l]) {
+						listStats[list[i]]['totalLemmas']++;
+						listStats[list[i]]['lemmas'][l] = [t];
+					} else {
+						listStats[list[i]]['lemmas'][l].push(t);
+					}
 				}
-				if (!lemma_list[f]["__total__"]) { lemma_list[f]["__total__"] = 0; }
-				lemma_list[f]["__total__"]++;
 			}
-		
-			// for token_list
-			if (token_list[f] && token_list[f][t]) {
-				token_list[f][t].push(t);
-			} else {
-				if (!token_list[f]) { token_list[f] = {}; }
-				if (!token_list[f][t]) { token_list[f][t] = []; }
-				token_list[f][t].push(t);
-				cnt_unique_tokens++;
-			}
-			if (!token_list[f]["__total__"]) { token_list[f]["__total__"] = 0; }
-			token_list[f]["__total__"]++;
 		}
 
-		for (index = 1; index <= 9; ++index) {
-			if (!token_list[index]) { token_list[index] = {}; }
-			if (!lemma_list[index]) { lemma_list[index] = {}; }
-			var ct = cnt_tokens - cnt_unknown_tokens;
-			var cl = cnt_unique_lemmas - cnt_unique_lemmas_list_null;
-			if (ct == 0) {
-				stat_percentage_tokens[index] = 0;
-			}
-			else {
-				stat_percentage_tokens[index] = (token_list[index]["__total__"] / ct) * 100 || 0;
-			}
-			if (cl == 0) {
-				stat_percentage_lemmas[index] = 0;
-			}
-			else {
-				stat_percentage_lemmas[index] = (lemma_list[index]["__total__"] / cl) * 100 || 0;
-			}
+		for (var i in lists) {
+			listStats[lists[i]]['percentageOfTotalTokens'] = listStats[lists[i]]['totalTokens'] / listStats['total']['totalTokens'] * 100 || 0;
+			listStats[lists[i]]['percentageOfKnownTokens'] = listStats[lists[i]]['totalTokens'] / listStats['known']['totalTokens'] * 100 || 0;
+			listStats[lists[i]]['percentageOfTotalLemmas'] = listStats[lists[i]]['totalLemmas'] / listStats['total']['totalLemmas'] * 100 || 0;
+			listStats[lists[i]]['percentageOfKnownLemmas'] = listStats[lists[i]]['totalLemmas'] / listStats['known']['totalLemmas'] * 100 || 0;
 		}
 
 		var n = [];
-		if (stat_percentage_tokens[2] < (6 * 1.25)) {
-			n[2] = stat_percentage_tokens[2] / (6 * 1.25);
+		if (listStats[2]['percentageOfKnownTokens'] < (6 * 1.25)) {
+			n[2] = listStats[2]['percentageOfKnownTokens'] / (6 * 1.25);
 		} else {
 			n[2] = 1;
 		}
-		if (stat_percentage_tokens[3] < (2.6 * 1.75)) {
-			n[3] = stat_percentage_tokens[3] / (2.6 * 1.75);
+		if (listStats[3]['percentageOfKnownTokens'] < (2.6 * 1.75)) {
+			n[3] = listStats[3]['percentageOfKnownTokens'] / (2.6 * 1.75);
 		} else {
 			n[3] = 1;
 		}
-		if (stat_percentage_tokens[4] < (1.5 * 2)) {
-			n[4] = stat_percentage_tokens[4] / (1.5 * 2);
+		if (listStats[4]['percentageOfKnownTokens'] < (1.5 * 2)) {
+			n[4] = listStats[4]['percentageOfKnownTokens'] / (1.5 * 2);
 		} else {
 			n[4] = 1;
 		}
-		if (stat_percentage_tokens[5] < (1.0 * 3)) {
-			n[5] = stat_percentage_tokens[5] / 3;
+		if (listStats[5]['percentageOfKnownTokens'] < (1.0 * 3)) {
+			n[5] = listStats[5]['percentageOfKnownTokens'] / 3;
 		} else {
 			n[5] = 1;
 		}
-		if (stat_percentage_tokens[6] < (1.0 * 4)) {
-			n[6] = (stat_percentage_tokens[6] / 4) * 1.5;
+		if (listStats[6]['percentageOfKnownTokens'] < (1.0 * 4)) {
+			n[6] = (listStats[6]['percentageOfKnownTokens'] / 4) * 1.5;
 		} else {
 			n[6] = 1.5;
 		}
-		if (stat_percentage_tokens[7] < (0.7 * 4)) {
-			n[7] = (stat_percentage_tokens[7] / (0.7 * 4)) * 1.6;
+		if (listStats[7]['percentageOfKnownTokens'] < (0.7 * 4)) {
+			n[7] = (listStats[7]['percentageOfKnownTokens'] / (0.7 * 4)) * 1.6;
 		} else {
 			n[7] = 1.6;
 		}
-		if (stat_percentage_tokens[8] < (1.0 * 6)) {
-			n[8] = (stat_percentage_tokens[8] / 6) * 4.6;
+		if (listStats[8]['percentageOfKnownTokens'] < (1.0 * 6)) {
+			n[8] = (listStats[8]['percentageOfKnownTokens'] / 6) * 4.6;
 		} else {
 			n[8] = 4.6;
 		}
-		if (stat_percentage_tokens[9] < (0.9 * 9)) {
-			n[9] = (stat_percentage_tokens[9] / (0.9 * 9)) * 13.8;
+		if (listStats[9]['percentageOfKnownTokens'] < (0.9 * 9)) {
+			n[9] = (listStats[9]['percentageOfKnownTokens'] / (0.9 * 9)) * 13.8;
 		} else {
 			n[9] = 13.8;
 		}
 
 		stat_mlrws = 1 + n.reduce(function(acc, val) { return acc + val; }, 0);
 	
-		for (index = 1; index <= 9; ++index) {
-			stat_tokens_cover[index] = stat_percentage_tokens.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
-			stat_lemmas_cover[index] = stat_percentage_lemmas.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
-		}
+		// TODO Make this work again, if it turns out I actually need it somewhere.
+		//for (index = 1; index <= 9; ++index) {
+		//	stat_tokens_cover[index] = stat_percentage_tokens.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
+		//	stat_lemmas_cover[index] = stat_percentage_lemmas.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
+		//}
 		
-		return {
-			mlr: stat_mlrws,
-			lemmas: lemma_list,
-			tokens: token_list,
-			stat_percentage_tokens: stat_percentage_tokens,
-			stat_percentage_lemmas: stat_percentage_lemmas,
-			stat_tokens_cover: stat_tokens_cover,
-			stat_lemmas_cover: stat_lemmas_cover
-			};
+		return { mlr: stat_mlrws, lists: listStats };
 	}
 }

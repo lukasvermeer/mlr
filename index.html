@@ -13,16 +13,33 @@
 		<script type="text/javascript">
 			$(function() {
 				$('#input').on('input', function() {
-					if ($(this).val()) {
-					    t = new Text($(this).val(), mlr);
-					    t.autoSelectLowestFactors();
-					    s = t.generateMlrStats();
-				    	$('#output').text(JSON.stringify(s, undefined, 4)).show();
-				    } else { $('#output').text('input empty').hide(); }
+					t = new Text($(this).val(), mlr);
+					t.autoSelectLowestFactors();
+					s = t.generateMlrStats();
+					
+					for (var i in Object.keys(s.lists)) {
+						var index = Object.keys(s.lists)[i];
+						$("#coverage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
+						$("#coverage_"+index+" .token.cover").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
+						$("#coverage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
+						$("#coverage_"+index+" .lemma.cover").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
+					}
+					$('#mlr').text(s.mlr);
+					$('#vocab').text(s.mlr*1000);
+					$('#output').text($(this).val() ? JSON.stringify(s, undefined, 4) : "");
 				});
-				$('#output').hide();
 			});
 		</script>
+		<style>
+			td:after { color: lightgrey; }
+			.cover:after {
+				content: "%";
+			}
+			td:empty:after {
+				content: "-";
+				display: block;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="container">
@@ -30,9 +47,33 @@
 			<p>Voor achtergronden en beschrijving: zie Vermeer, A. (2000). Lexicale rijkdom, tekstmoeilijkheid en woordenschatgrootte. Beschrijving van de MLR, een woordenschat-analyseprogramma. <i>Toegepaste TaalWetenschap in Artikelen</i>  64, 95-105   (<a href="http://let.uvt.nl/general/people/avermeer/mlr/mlrttwia64.PDF" target="_blank">PDF)</a>.  Let op! Dit artikel is de beschrijving van een vorige versie van de MLR. Nieuwe gebruiksaanwijzing volgt z.s.m.</p>
 			<div class="form-group">
 				<label for="input">Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst:</label>
-				<textarea id="input" class="form-control"></textarea>
+				<textarea id="input" class="form-control" autofocus></textarea>
 			</div>
-			<pre id="output" style="display: none"></pre>
+			<p class="lead">MLR van deze tekst = <b id="mlr"></b> <small>(indicatie woordvoorraad <span id="vocab"></span> woorden)</small></p>
+			<div>
+				<div class="panel panel-default">
+				  <table class="table table-striped" id="coverage">
+				  	<caption>Lijstverdeling</caption>
+					<thead>
+						<tr><th>Woordenlijst</th><th>Tokens</th><th>%</th><th>Lemma's</th><th>%</th></tr>
+					</thead>
+					<tbody>
+						<tr id="coverage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_0"><th scope="row">Onbekend</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="coverage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+				  </table>
+				</div>
+			</div>
+			<pre id="output"></pre>
 		</div>
 	</body>
 </html>
