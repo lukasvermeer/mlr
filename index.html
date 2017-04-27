@@ -24,8 +24,8 @@
 						$("#coverage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
 						$("#coverage_"+index+" .lemma.cover").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
 					}
-					$('#mlr').text(s.mlr);
-					$('#vocab').text(s.mlr*1000);
+					$('#mlr').text(s.mlr.toFixed(2));
+					$('#vocab').text((s.mlr*1000).toFixed(0));
 					$('#output').text($(this).val() ? JSON.stringify(s, undefined, 4) : "");
 				});
 			});
