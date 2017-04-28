@@ -6,9 +6,8 @@
 
 var Token = function(i_t, mlr) {
 	this.t = i_t; // STRING a token
-	this.mlr = mlr; // REFERENCE to an MLR data Object
 	this.ignore = false; // BOOL should this token be ignored in statistics?
-	this.lemmas = this.mlr.tokens[i_t] || this.mlr.lemmas[i_t]; // ARRAY of possible lemmas for this token
+	this.lemmas = mlr.tokens[i_t] || mlr.lemmas[i_t]; // ARRAY of possible lemmas for this token
 	this.selected = 0; // INT which lemma (number) is currently selected
 
 	this.setSelected = function(n) { if(n < this.lemmas.length) { this.selected = n; } }
@@ -21,12 +20,12 @@ var Token = function(i_t, mlr) {
 		}
 	}
 
-	this.autoSelectLowestFactor = function() {
+	this.autoSelectLowestFactor = function(mlr) {
 		if (this.lemmas) {
 			var lowestIndex = 0;
 			for (index = 0; index < this.lemmas.length; ++index) {
-				if ((this.mlr.lemmas[this.lemmas[index]] < this.mlr.lemmas[this.lemmas[lowestIndex]] || 
-					this.mlr.lemmas[this.lemmas[lowestIndex]] == 0) && this.mlr.lemmas[this.lemmas[index]] > 0) {
+				if ((mlr.lemmas[this.lemmas[index]] < mlr.lemmas[this.lemmas[lowestIndex]] || 
+					mlr.lemmas[this.lemmas[lowestIndex]] == 0) && mlr.lemmas[this.lemmas[index]] > 0) {
 					lowestIndex = index;
 				}
 			}
@@ -34,11 +33,11 @@ var Token = function(i_t, mlr) {
 		}
 	}
 
-	this.autoSelectHighestFactor = function() {
+	this.autoSelectHighestFactor = function(mlr) {
 		if (this.lemmas) {
 			var highestIndex = 0;
 			for (index = 0; index < this.lemmas.length; ++index) {
-				if (this.mlr.lemmas[this.lemmas[index]] > this.mlr.lemmas[this.lemmas[highestIndex]]) {
+				if (mlr.lemmas[this.lemmas[index]] > mlr.lemmas[this.lemmas[highestIndex]]) {
 					highestIndex = index;
 				}
 			}
@@ -49,7 +48,6 @@ var Token = function(i_t, mlr) {
 
 var Text = function(i_o = "", mlr) {
 	this.originalText = i_o; // STRING the original text 
-	this.mlr = mlr; // REFERENCE to an MLR data Object
 	
 	this.parseText = function(text) {
 		// split text into words
@@ -68,10 +66,10 @@ var Text = function(i_o = "", mlr) {
 	this.regenerateText = function() { return this.tokenlist.map(function(x){return(x.t)}).join(" "); }
 	this.generateLemmaText = function() { return this.tokenlist.map(function(x){return(x.getSelectedLemma())}).join(" "); }
 
-	this.autoSelectLowestFactors = function() { this.tokenlist.forEach(function(t) { t.autoSelectLowestFactor() }); }
-	this.autoSelectHighestFactors = function() { this.tokenlist.forEach(function(t) { t.autoSelectHighestFactor() }); }
+	this.autoSelectLowestFactors = function(mlr) { this.tokenlist.forEach(function(t) { t.autoSelectLowestFactor(mlr) }); }
+	this.autoSelectHighestFactors = function(mlr) { this.tokenlist.forEach(function(t) { t.autoSelectHighestFactor(mlr) }); }
 	
-	this.generateMlrStats = function() {
+	this.generateMlrStats = function(mlr) {
 		var lists = ['0','1','2','3','4','5','6','7','8','9','known','total']; // enum of all lists.
 		var listStats = {}; // statistics for each list.
 		for (var l in lists) {
@@ -82,7 +80,7 @@ var Text = function(i_o = "", mlr) {
 		for (index = 0; index < this.tokenlist.length; ++index) { // for each word in the text
 			var t = this.tokenlist[index].t;
 			var l = this.tokenlist[index].getSelectedLemma();
-			var f = this.mlr.lemmas[l] || 0;
+			var f = mlr.lemmas[l] || 0;
 
 			if (!this.tokenlist[index].ignore) {
 				var list = ['total',f];

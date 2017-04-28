@@ -14,8 +14,8 @@
 			$(function() {
 				$('#input').on('input', function() {
 					t = new Text($(this).val(), mlr);
-					t.autoSelectLowestFactors();
-					s = t.generateMlrStats();
+					t.autoSelectLowestFactors(mlr);
+					s = t.generateMlrStats(mlr);
 					
 					for (var i in Object.keys(s.lists)) {
 						var index = Object.keys(s.lists)[i];
