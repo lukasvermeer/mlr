@@ -19,13 +19,18 @@
 					
 					for (var i in Object.keys(s.lists)) {
 						var index = Object.keys(s.lists)[i];
-						$("#coverage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
-						$("#coverage_"+index+" .token.cover").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
-						$("#coverage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
-						$("#coverage_"+index+" .lemma.cover").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
+						$("#percentage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
+						$("#percentage_"+index+" .token.percent").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
+						$("#percentage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
+						$("#percentage_"+index+" .lemma.percent").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
 					}
-					$('#mlr').text(s.mlr.toFixed(2));
-					$('#vocab').text((s.mlr*1000).toFixed(0));
+					if ($(this).val()) {
+						$('#mlr').text(s.mlr.toFixed(2));
+						$('#vocab').text((s.mlr*1000).toFixed(0));
+						$('#mlrGroup').show(400);
+					} else {
+						$('#mlrGroup').hide(400);
+					}
 					
 					// if debug information is shown, update it.
 					if ($("#debugGroupContent").is(":visible")) {
@@ -50,7 +55,7 @@
 		</script>
 		<style>
 			td:after { color: lightgrey; }
-			.cover:after {
+			.percent:after {
 				content: "%";
 			}
 			td:empty:after {
@@ -70,27 +75,27 @@
 				<label for="input">Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst:</label>
 				<textarea id="input" class="form-control" autofocus></textarea>
 			</div>
-			<p class="lead">MLR van deze tekst = <b id="mlr"></b> <small>(indicatie woordvoorraad <span id="vocab"></span> woorden)</small></p>
+			<p class="lead" style="display: none;" id="mlrGroup">MLR van deze tekst = <b id="mlr"></b> <small>(indicatie woordvoorraad <span id="vocab"></span> woorden)</small></p>
 			<div>
 				<div class="panel panel-default">
-				  <table class="table table-striped" id="coverage">
+				  <table class="table table-striped" id="percentage">
 				  	<caption>Lijstverdeling</caption>
 					<thead>
 						<tr><th>Woordenlijst</th><th>Tokens</th><th>%</th><th>Lemma's</th><th>%</th></tr>
 					</thead>
 					<tbody>
-						<tr id="coverage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_0"><th scope="row">Onbekend</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
-						<tr id="coverage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token cover"></td><td class="lemma count"></td><td class="lemma cover"></td></tr>
+						<tr id="percentage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_0"><th scope="row">Onbekend</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
 				  </table>
 				</div>
 			</div>
