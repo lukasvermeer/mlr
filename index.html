@@ -12,6 +12,8 @@
 
 		<script type="text/javascript">
 			$(function() {
+				$('span[data-toggle="tooltip"]').tooltip(); 
+				
 				$('#input').on('input', function() {
 					t = new Text($(this).val(), mlr);
 					t.autoSelectLowestFactors(mlr);
@@ -21,8 +23,10 @@
 						var index = Object.keys(s.lists)[i];
 						$("#percentage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
 						$("#percentage_"+index+" .token.percent").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
+						$("#percentage_"+index+" .token.cumulative").text(s.lists[index]["cumulativePercentageOfTotalTokens"] > 0 ? s.lists[index]["cumulativePercentageOfTotalTokens"].toFixed(2) : "");
 						$("#percentage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
 						$("#percentage_"+index+" .lemma.percent").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
+						$("#percentage_"+index+" .lemma.cumulative").text(s.lists[index]["cumulativePercentageOfTotalLemmas"] > 0 ? s.lists[index]["cumulativePercentageOfTotalLemmas"].toFixed(2) : "");
 					}
 					if ($(this).val()) {
 						$('#mlr').text(s.mlr.toFixed(2));
@@ -54,8 +58,13 @@
 			});
 		</script>
 		<style>
-			td:after { color: lightgrey; }
+			td:after {
+				color: lightgrey;
+			}
 			.percent:after {
+				content: "%";
+			}
+			.cumulative:after {
 				content: "%";
 			}
 			td:empty:after {
@@ -81,21 +90,29 @@
 				  <table class="table table-striped" id="percentage">
 				  	<caption>Lijstverdeling</caption>
 					<thead>
-						<tr><th>Woordenlijst</th><th>Tokens</th><th>%</th><th>Lemma's</th><th>%</th></tr>
+						<tr>
+							<th>Woordenlijst</th>
+							<th><span data-toggle="tooltip" title="Het aantal tokens dat in deze lijst voorkomt.">Tokens</span></th>
+							<th><span data-toggle="tooltip" title="Het percentage van alle tokens dat in deze lijst voorkomt.">Percentage</span></th>
+							<th><span data-toggle="tooltip" title="Het cumulatieve percentage van alle tokens dat in deze of eerdere lijsten voorkomt.">Cumulatief</span></th>
+							<th><span data-toggle="tooltip" title="Het aantal lemma's dat in deze lijst voorkomt.">Lemma's</span></th>
+							<th><span data-toggle="tooltip" title="Het percentage van alle lemma's dat in deze lijst voorkomt.">Percentage</span></th>
+							<th><span data-toggle="tooltip" title="Het cumulatieve percentage van alle lemma's dat in deze of eerdere lijsten voorkomt.">Cumulatief</span></th>
+						</tr>
 					</thead>
 					<tbody>
-						<tr id="percentage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_0"><th scope="row">Onbekend</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
-						<tr id="percentage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token percent"></td><td class="lemma count"></td><td class="lemma percent"></td></tr>
+						<tr id="percentage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_0" class="warning"><th scope="row">Onbekend</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
+						<tr id="percentage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
 				  </table>
 				</div>
 			</div>

@@ -106,6 +106,21 @@ var Text = function(i_o = "", mlr) {
 			listStats[lists[i]]['percentageOfKnownLemmas'] = listStats[lists[i]]['totalLemmas'] / listStats['known']['totalLemmas'] * 100 || 0;
 		}
 
+		for (i = 1; i <= 9; ++i) {
+			listStats[i]['cumulativePercentageOfKnownTokens'] = 0;
+			listStats[i]['cumulativePercentageOfKnownLemmas'] = 0;
+			listStats[i]['cumulativePercentageOfTotalTokens'] = 0;
+			listStats[i]['cumulativePercentageOfTotalLemmas'] = 0;
+
+			for (var j = 1; j <= i; ++j) {
+				listStats[i]['cumulativePercentageOfKnownTokens'] += listStats[j]['percentageOfKnownTokens'];
+				listStats[i]['cumulativePercentageOfKnownLemmas'] += listStats[j]['percentageOfKnownLemmas'];
+				listStats[i]['cumulativePercentageOfTotalTokens'] += listStats[j]['percentageOfTotalTokens'];
+				listStats[i]['cumulativePercentageOfTotalLemmas'] += listStats[j]['percentageOfTotalLemmas'];
+			}
+		}
+
+
 		var n = [];
 		if (listStats[2]['percentageOfKnownTokens'] < (6 * 1.25)) {
 			n[2] = listStats[2]['percentageOfKnownTokens'] / (6 * 1.25);
@@ -149,13 +164,7 @@ var Text = function(i_o = "", mlr) {
 		}
 
 		stat_mlrws = 1 + n.reduce(function(acc, val) { return acc + val; }, 0);
-	
-		// TODO Make this work again, if it turns out I actually need it somewhere.
-		//for (index = 1; index <= 9; ++index) {
-		//	stat_tokens_cover[index] = stat_percentage_tokens.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
-		//	stat_lemmas_cover[index] = stat_percentage_lemmas.slice(0, index).reduce(function(acc, val) { return acc + val; }, 0);
-		//}
-		
+			
 		return { mlr: stat_mlrws, lists: listStats };
 	}
 }
