@@ -26,7 +26,23 @@
 					}
 					$('#mlr').text(s.mlr.toFixed(2));
 					$('#vocab').text((s.mlr*1000).toFixed(0));
-					$('#output').text($(this).val() ? JSON.stringify(s, undefined, 4) : "");
+					
+					// if debug information is shown, update it.
+					if ($("#debugGroupContent").is(":visible")) {
+						$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
+						$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
+					}
+				});
+				
+				// whenever debug window is opened, update the data
+				$('#debug_show').on('click', function() {
+					if (!$("#debugGroupContent").is(":visible")) {
+						$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
+						$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
+						$('#debug_mlr_version code').text(JSON.stringify(mlr.version, undefined, 4));
+						$('#debug_tokens pre').text(JSON.stringify(mlr.tokens, undefined, 4));
+						$('#debug_lemmas pre').text(JSON.stringify(mlr.lemmas, undefined, 4));
+					}
 				});
 			});
 		</script>
@@ -38,6 +54,9 @@
 			td:empty:after {
 				content: "-";
 				display: block;
+			}
+			.pills-small li a {
+				padding: 4px;
 			}
 		</style>
 	</head>
@@ -73,7 +92,34 @@
 				  </table>
 				</div>
 			</div>
-			<pre id="output"></pre>
+			<div class="panel-group" id="debugGroup" role="tablist" aria-multiselectable="true">
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab" id="debugGroupHeading">
+						<a id="debug_show" role="button" data-toggle="collapse" data-parent="#debugGroup" href="#debugGroupContent" aria-expanded="true" aria-controls="debugGroupContent">
+							<small>Onderwaterscherm <span class="caret"></span></small>
+						</a>
+					</div>
+					<div id="debugGroupContent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="debugGroupContent">
+						<div class="panel-body">
+							<ul class="nav nav-pills pills-small nav-justified button-small" role="tablist">
+								<li role="presentation" class="active"><a href="#debug_mlr_version" aria-controls="debug_mlr_version" role="tab" data-toggle="tab">Versie</a></li>
+								<li role="presentation"><a href="#debug_tokens" aria-controls="debug_tokens" role="tab" data-toggle="tab">Tokens</a></li>
+								<li role="presentation"><a href="#debug_lemmas" aria-controls="debug_lemmas" role="tab" data-toggle="tab">Lemmas</a></li>
+								<li role="presentation"><a href="#debug_text" aria-controls="debug_text" role="tab" data-toggle="tab">Tekst</a></li>
+								<li role="presentation"><a href="#debug_statistics" aria-controls="debug_statistics" role="tab" data-toggle="tab">Statistieken</a></li>
+							</ul>
+							<br />
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version"><p>Het versienummer van de geladen MLR dataset is <code>FOUT</code>.</p></div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_tokens"><h4>Interne representatie van alle tokens in de geladen MLR dataset.</h4><pre></pre></div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_lemmas"><h4>Interne representatie van alle lemmas in de geladen MLR dataset.</h4><pre></pre></div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_text"><h4>Interne representatie van de ingevoerde tekst.</h4><pre></pre></div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_statistics"><h4>Interne representatie de statistieken op basis van de ingevoerde tekst.</h4><pre></pre></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
