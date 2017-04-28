@@ -37,11 +37,13 @@
 				// whenever debug window is opened, update the data
 				$('#debug_show').on('click', function() {
 					if (!$("#debugGroupContent").is(":visible")) {
-						$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
-						$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
 						$('#debug_mlr_version code').text(JSON.stringify(mlr.version, undefined, 4));
 						$('#debug_tokens pre').text(JSON.stringify(mlr.tokens, undefined, 4));
 						$('#debug_lemmas pre').text(JSON.stringify(mlr.lemmas, undefined, 4));
+						try {
+							$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
+							$('#debug_text pre').text(JSON.stringify(t, undefined, 4)); 
+						} catch(err) {}
 					}
 				});
 			});
