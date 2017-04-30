@@ -41,6 +41,26 @@
 						$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
 						$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
 					}
+					
+					// if lemma lists are shown, update them.
+					if ($("#lemmasGroupContent").is(":visible")) {
+						$("#lemmaListTarget").empty();
+						for (var i in Object.keys(s.lists)) {
+							var index = Object.keys(s.lists)[i];
+							if (index != "known" && index != "total" && s.lists[index].totalLemmas > 0) {
+								$("#lemmaListTarget").append($("#lemmaListTemplate").clone().prop("id", "lemmaList"+index));
+								$("#lemmaList"+index+" caption").text("Lijst "+index);
+								$("#lemmaList"+index+" tbody").prop("id", "lemmaListRowTarget"+index).empty();
+								var lemmas = Object.keys(s.lists[index].lemmas).sort(function(a,b){return s.lists[index].lemmas[b].length - s.lists[index].lemmas[a].length});
+								for (var j = 0; j < lemmas.length; ++j) {
+									var lemma = lemmas[j];
+									$("#lemmaListRowTarget"+index).append($("#lemmaListRowTemplate").clone().prop("id", "lemmaList"+index+"Row"+j));
+									$("#lemmaList"+index+"Row"+j+" td:nth-child(1)").text(lemma);
+									$("#lemmaList"+index+"Row"+j+" td:nth-child(2)").text(s.lists[index].lemmas[lemma].length);
+								}
+							}
+						}
+					}
 				});
 				
 				// whenever debug window is opened, update the data
@@ -116,6 +136,35 @@
 				  </table>
 				</div>
 			</div>
+
+			<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">Lemmalijsten</div>
+					<div id="lemmasGroupContent">
+						<div class="panel-body">
+							<div style="display:none;">
+								<table class="table table-striped" id="lemmaListTemplate">
+									<caption>Template</caption>
+									<thead>
+										<tr>
+											<th>Lemma</th>
+											<th>Frequentie</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr id="lemmaListRowTemplate">
+											<td class="lemma"></td>
+											<td class="lemma count col-md-1"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div id="lemmaListTarget"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<p class="text-center"><small>Dit project wordt onderhouden op <a href="http://github.com/lukasvermeer/mlr">Github</a> door <a href="http://www.lukasvermeer.nl">Lukas Vermeer</a> en <a href="http://annevermeer.com/">Anne Vermeer</a>.</small></p>
 			<div class="panel-group" id="debugGroup" role="tablist" aria-multiselectable="true">
 				<div class="panel panel-default">
