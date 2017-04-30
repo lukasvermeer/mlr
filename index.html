@@ -19,48 +19,7 @@
 					t.autoSelectLowestFactors(mlr);
 					s = t.generateMlrStats(mlr);
 					
-					for (var i in Object.keys(s.lists)) {
-						var index = Object.keys(s.lists)[i];
-						$("#percentage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
-						$("#percentage_"+index+" .token.percent").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
-						$("#percentage_"+index+" .token.cumulative").text(s.lists[index]["cumulativePercentageOfTotalTokens"] > 0 ? s.lists[index]["cumulativePercentageOfTotalTokens"].toFixed(2) : "");
-						$("#percentage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
-						$("#percentage_"+index+" .lemma.percent").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
-						$("#percentage_"+index+" .lemma.cumulative").text(s.lists[index]["cumulativePercentageOfTotalLemmas"] > 0 ? s.lists[index]["cumulativePercentageOfTotalLemmas"].toFixed(2) : "");
-					}
-					if ($(this).val()) {
-						$('#mlr').text(s.mlr.toFixed(2));
-						$('#vocab').text((s.mlr*1000).toFixed(0));
-						$('#mlrGroup').show(400);
-					} else {
-						$('#mlrGroup').hide(400);
-					}
-					
-					// if debug information is shown, update it.
-					if ($("#debugGroupContent").is(":visible")) {
-						$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
-						$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
-					}
-					
-					// if lemma lists are shown, update them.
-					if ($("#lemmasGroupContent").is(":visible")) {
-						$("#lemmaListTarget").empty();
-						for (var i in Object.keys(s.lists)) {
-							var index = Object.keys(s.lists)[i];
-							if (index != "known" && index != "total" && s.lists[index].totalLemmas > 0) {
-								$("#lemmaListTarget").append($("#lemmaListTemplate").clone().prop("id", "lemmaList"+index));
-								$("#lemmaList"+index+" caption").text("Lijst "+index);
-								$("#lemmaList"+index+" tbody").prop("id", "lemmaListRowTarget"+index).empty();
-								var lemmas = Object.keys(s.lists[index].lemmas).sort(function(a,b){return s.lists[index].lemmas[b].length - s.lists[index].lemmas[a].length});
-								for (var j = 0; j < lemmas.length; ++j) {
-									var lemma = lemmas[j];
-									$("#lemmaListRowTarget"+index).append($("#lemmaListRowTemplate").clone().prop("id", "lemmaList"+index+"Row"+j));
-									$("#lemmaList"+index+"Row"+j+" td:nth-child(1)").text(lemma);
-									$("#lemmaList"+index+"Row"+j+" td:nth-child(2)").text(s.lists[index].lemmas[lemma].length);
-								}
-							}
-						}
-					}
+					updateUI();
 				});
 				
 				// whenever debug window is opened, update the data
@@ -76,6 +35,78 @@
 					}
 				});
 			});
+			
+			var updateUI = function() {
+				for (var i in Object.keys(s.lists)) {
+					var index = Object.keys(s.lists)[i];
+					$("#percentage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
+					$("#percentage_"+index+" .token.percent").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
+					$("#percentage_"+index+" .token.cumulative").text(s.lists[index]["cumulativePercentageOfTotalTokens"] > 0 ? s.lists[index]["cumulativePercentageOfTotalTokens"].toFixed(2) : "");
+					$("#percentage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
+					$("#percentage_"+index+" .lemma.percent").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
+					$("#percentage_"+index+" .lemma.cumulative").text(s.lists[index]["cumulativePercentageOfTotalLemmas"] > 0 ? s.lists[index]["cumulativePercentageOfTotalLemmas"].toFixed(2) : "");
+				}
+				if ($("#input").val()) {
+					$('#mlr').text(s.mlr.toFixed(2));
+					$('#vocab').text((s.mlr*1000).toFixed(0));
+					$('#mlrGroup').show(400);
+				} else {
+					$('#mlrGroup').hide(400);
+				}
+
+				// if tokens breakdown is shown, update them.
+				if ($("#tokensGroupContent").is(":visible")) {
+					$("#tokenListTarget").empty();
+					for (index = 0; index < t.tokenlist.length; ++index) {
+						$("#tokenListTarget").append($("#tokenTemplate").clone().prop("id", "token"+index));
+						$("#token"+index+" button").text(t.tokenlist[index].t);
+						$("#token"+index+" .ignore-token").prop("token", index);
+						
+						if (!t.tokenlist[index].ignore) {
+							if (!mlr.lemmas[t.tokenlist[index].getSelectedLemma()] > 0) {
+								$("#token"+index+" button"). addClass("btn-warning");
+							} else {
+								$("#token"+index+" button").addClass("btn-default");
+							}
+						} else {
+							$("#token"+index+" .ignore-token").addClass("btn-info")
+						}
+					}
+				}
+
+				// if lemma lists are shown, update them.
+				if ($("#lemmasGroupContent").is(":visible")) {
+					$("#lemmaListTarget").empty();
+					for (var i in Object.keys(s.lists)) {
+						var index = Object.keys(s.lists)[i];
+						if (index != "known" && index != "total" && s.lists[index].totalLemmas > 0) {
+							$("#lemmaListTarget").append($("#lemmaListTemplate").clone().prop("id", "lemmaList"+index));
+							$("#lemmaList"+index+" caption").text("Lijst "+index);
+							$("#lemmaList"+index+" tbody").prop("id", "lemmaListRowTarget"+index).empty();
+							var lemmas = Object.keys(s.lists[index].lemmas).sort(function(a,b){return s.lists[index].lemmas[b].length - s.lists[index].lemmas[a].length});
+							for (var j = 0; j < lemmas.length; ++j) {
+								var lemma = lemmas[j];
+								$("#lemmaListRowTarget"+index).append($("#lemmaListRowTemplate").clone().prop("id", "lemmaList"+index+"Row"+j));
+								$("#lemmaList"+index+"Row"+j+" td:nth-child(1)").text(lemma);
+								$("#lemmaList"+index+"Row"+j+" td:nth-child(2)").text(s.lists[index].lemmas[lemma].length);
+							}
+						}
+					}
+				}
+				
+				// if debug information is shown, update it.
+				if ($("#debugGroupContent").is(":visible")) {
+					$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
+					$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
+				}
+			}
+
+			var ignoreToken = function(e) {
+				t.tokenlist[($(e).prop("token"))].ignore = !t.tokenlist[($(e).prop("token"))].ignore;
+				s = t.generateMlrStats(mlr);
+				
+				updateUI();
+			}
 		</script>
 		<style>
 			td:after {
@@ -93,6 +124,9 @@
 			}
 			.pills-small li a {
 				padding: 4px;
+			}
+			.token-button {
+				margin: 2px;
 			}
 		</style>
 	</head>
@@ -134,6 +168,27 @@
 						<tr id="percentage_0" class="warning"><th scope="row">Onbekend</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
 						<tr id="percentage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
 				  </table>
+				</div>
+			</div>
+
+			<div class="panel-group">
+				<div class="panel panel-default">
+					<div class="panel-heading">Tokens</div>
+					<div id="tokensGroupContent">
+						<div class="panel-body">
+							<div style="display:none;">
+								<div class="btn-group token-button" id="tokenTemplate" role="group">
+									<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Template
+									</button>
+									<ul class="dropdown-menu">
+										<li><a role="button" onClick="ignoreToken(this)" class="ignore-token">Negeer</a></li>
+									</ul>
+								</div>
+							</div>
+							<div id="tokenListTarget"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 
