@@ -16,9 +16,9 @@ Uitgangspunt is: hoe minder frequent een woord in een taal gebruikt wordt, hoe m
 
 ## Gebruik
 
-Bij het invoeren van een tekst (van een kind, of uit een boek) in het scherm worden de losse woorden (“tokens”) herleid naar hun hoofdvorm (“lemma’s”), dus boekje naar boek, en fietste naar fietsen. Van sterke werkwoorden worden de vt- en vd-vormen apart genoteerd (zie Schrooten & Vermeer 1994: 22).
+Bij het invoeren van een tekst (van een kind, of uit een boek) in het scherm worden de losse woorden (“tokens”) herleid naar hun hoofdvorm (“lemma’s”), dus *boekje* naar *boek*, en *fietste* naar *fietsen*. Van sterke werkwoorden worden de vt- en vd-vormen apart genoteerd (zie Schrooten & Vermeer 1994: 22).
 
-De door de gebruiker ingevoerde tekst van een kind wordt in de output weergegeven; de geel gemarkeerde woorden komen niet voor in de lijst van Schrooten & Vermeer, of werden niet herkend. Bij groen gemarkeerde woorden kan eventueel de betekenis gekozen worden die in die context de juiste is (bijvoorbeeld bank_zitten of bank_geld). Ook zijn eventuele correcties handmatig aan te brengen.
+De door de gebruiker ingevoerde tekst van een kind wordt in de output weergegeven; de geel gemarkeerde woorden komen niet voor in de lijst van Schrooten & Vermeer, of werden niet herkend. Bij groen gemarkeerde woorden kan eventueel de betekenis gekozen worden die in die context de juiste is (bijvoorbeeld *bank_zitten* of *bank_geld*). Ook zijn eventuele correcties handmatig aan te brengen.
 
 ## Resultaten
 
