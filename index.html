@@ -60,7 +60,7 @@
 					for (index = 0; index < t.tokenlist.length; ++index) {
 						$("#tokenListTarget").append($("#tokenTemplate").clone().prop("id", "token"+index));
 						$("#token"+index+" button").text(t.tokenlist[index].t);
-						$("#token"+index+" .ignore-token").prop("token", index);
+						$("#token"+index+" a").prop("token", index);
 						
 						if (!t.tokenlist[index].ignore) {
 							if (!mlr.lemmas[t.tokenlist[index].getSelectedLemma()] > 0) {
@@ -103,6 +103,18 @@
 
 			var ignoreToken = function(e) {
 				t.tokenlist[($(e).prop("token"))].ignore = !t.tokenlist[($(e).prop("token"))].ignore;
+				s = t.generateMlrStats(mlr);
+				
+				updateUI();
+			}
+			
+			var ignoreAllToken = function(e) {
+				var token = t.tokenlist[($(e).prop("token"))].t;
+				for (index = 0; index < t.tokenlist.length; ++index) {
+					if (t.tokenlist[index].t == token) {
+						t.tokenlist[index].ignore = true;
+					}
+				}
 				s = t.generateMlrStats(mlr);
 				
 				updateUI();
@@ -183,6 +195,7 @@
 									</button>
 									<ul class="dropdown-menu">
 										<li><a role="button" onClick="ignoreToken(this)" class="ignore-token">Negeer</a></li>
+										<li><a role="button" onClick="ignoreAllToken(this)" class="ignore-all-token">Negeer Allen</a></li>
 									</ul>
 								</div>
 							</div>
