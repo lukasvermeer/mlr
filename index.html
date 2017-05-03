@@ -62,6 +62,12 @@
 						$("#token"+index+" button").text(t.tokenlist[index].t);
 						$("#token"+index+" a").prop("token", index);
 						
+						for (j = 0; t.tokenlist[index].lemmas && j < t.tokenlist[index].lemmas.length; ++j) {
+							$("#token"+index+" ul").prepend($("#selectLemmaForTokenTemplate").clone().prop("id", "selectLemma"+j+"ForToken"+index));
+							$("#selectLemma"+j+"ForToken"+index+" a").text(t.tokenlist[index].lemmas[j]).prop("lemma", j).prop("token", index);
+							if (t.tokenlist[index].selected == j) { $("#selectLemma"+j+"ForToken"+index+" a").addClass("btn-info"); }
+						}
+						
 						if (!t.tokenlist[index].ignore) {
 							if (!mlr.lemmas[t.tokenlist[index].getSelectedLemma()] > 0) {
 								$("#token"+index+" button"). addClass("btn-warning");
@@ -69,7 +75,7 @@
 								$("#token"+index+" button").addClass("btn-default");
 							}
 						} else {
-							$("#token"+index+" .ignore-token").addClass("btn-info")
+							$("#token"+index+" .ignore-token").addClass("btn-info");
 						}
 					}
 				}
@@ -115,6 +121,13 @@
 						t.tokenlist[index].ignore = true;
 					}
 				}
+				s = t.generateMlrStats(mlr);
+				
+				updateUI();
+			}
+			
+			var selectLemmaForToken = function(e) {
+				t.tokenlist[($(e).prop("token"))].setSelected(($(e).prop("lemma")));
 				s = t.generateMlrStats(mlr);
 				
 				updateUI();
@@ -198,8 +211,11 @@
 										Template
 									</button>
 									<ul class="dropdown-menu">
+										<li id="selectLemmaForTokenTemplate"><a role="button" onClick="selectLemmaForToken(this)"></a></li>
+										<li role="separator" class="divider"></li>
+
 										<li><a role="button" onClick="ignoreToken(this)" class="ignore-token">Negeer</a></li>
-										<li><a role="button" onClick="ignoreAllToken(this)" class="ignore-all-token">Negeer Allen</a></li>
+										<li><a role="button" onClick="ignoreAllToken(this)">Negeer Allen</a></li>
 									</ul>
 								</div>
 							</div>
