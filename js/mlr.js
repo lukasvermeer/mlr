@@ -168,3 +168,25 @@ var Text = function(i_o = "", mlr) {
 		return { mlr: stat_mlrws, lists: listStats };
 	}
 }
+
+var DataIssues = function(mlr) {
+	this.issues = [];
+	
+	for (var t in mlr.tokens) {
+		if (mlr.tokens[t].length == 0) { 
+			issues.push("Token "+t+" is aan geen enkele lemma gekoppeld.");
+		}
+		
+		if (mlr.tokens[t].length == 1 && t == mlr.tokens[t][0]) {
+			issues.push("Token "+t+" is alleen gekoppeld aan een identieke lemma.");
+		}
+	}
+	
+	for (var l in mlr.lemmas) {
+		if ((l.substr(l.length-2) == "_N" || l.substr(l.length-2) == "_V") && !mlr.tokens[l.substr(0,l.length-2)]) { 
+			issues.push("Er is een lemma "+l+" maar geen token "+l.substr(0,l.length-2)+".");
+		}
+	}
+	
+	return issues;
+}

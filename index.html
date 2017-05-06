@@ -29,6 +29,15 @@
 						$('#debug_mlr_version code').text(JSON.stringify(mlr.version, undefined, 4));
 						$('#debug_tokens pre').text(JSON.stringify(mlr.tokens, undefined, 4));
 						$('#debug_lemmas pre').text(JSON.stringify(mlr.lemmas, undefined, 4));
+						var issues = DataIssues(mlr);
+						$('#debug_dataq ul').empty();
+						if (issues.length > 0) {
+							for (index = 0; index < issues.length; ++index) {
+								$('#debug_dataq ul').append($('<li>').text(issues[index]));
+							}
+						} else {
+							$('#debug_dataq ul').append($('<li>').text("Geen problemen gevonden."));
+						}
 						try {
 							$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
 							$('#debug_text pre').text(JSON.stringify(t, undefined, 4)); 
@@ -268,6 +277,7 @@
 								<li role="presentation" class="active"><a href="#debug_mlr_version" aria-controls="debug_mlr_version" role="tab" data-toggle="tab">Versie</a></li>
 								<li role="presentation"><a href="#debug_tokens" aria-controls="debug_tokens" role="tab" data-toggle="tab">Tokens</a></li>
 								<li role="presentation"><a href="#debug_lemmas" aria-controls="debug_lemmas" role="tab" data-toggle="tab">Lemmas</a></li>
+								<li role="presentation"><a href="#debug_dataq" aria-controls="debug_dataq" role="tab" data-toggle="tab">Controle</a></li>
 								<li role="presentation"><a href="#debug_text" aria-controls="debug_text" role="tab" data-toggle="tab">Tekst</a></li>
 								<li role="presentation"><a href="#debug_statistics" aria-controls="debug_statistics" role="tab" data-toggle="tab">Statistieken</a></li>
 							</ul>
@@ -276,6 +286,7 @@
 								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version"><p>Het versienummer van de geladen MLR dataset is <code>FOUT</code>.</p></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_tokens"><h4>Interne representatie van alle tokens in de geladen MLR dataset.</h4><pre></pre></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_lemmas"><h4>Interne representatie van alle lemmas in de geladen MLR dataset.</h4><pre></pre></div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_dataq"><h4>Mogelijke problemen met de datakwaliteit van de geladen MLR dataset.</h4><ul class="list-unstyled"><code>FOUT BIJ UITVOEREN CONTROLE</code></ul></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_text"><h4>Interne representatie van de ingevoerde tekst.</h4><pre></pre></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_statistics"><h4>Interne representatie de statistieken op basis van de ingevoerde tekst.</h4><pre></pre></div>
 							</div>
