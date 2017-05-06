@@ -57,7 +57,7 @@ var Text = function(i_o = "", mlr) {
 	
 	this.parseText = function(text) {
 		// split text into words
-		var split = removeDiacritics(text).trim().toLowerCase().match(/[\w\']+/g);
+		var split = removeDiacritics(text).trim().toLowerCase().match(/[\w\'\*]+/g);
 		
 		// store as a list of tokens with metadata
 		var t = [];
