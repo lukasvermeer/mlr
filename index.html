@@ -83,7 +83,11 @@
 							if (!mlr.lemmas[t.tokenlist[index].getSelectedLemma()] > 0) {
 								$("#token"+index+" button"). addClass("btn-warning");
 							} else {
-								$("#token"+index+" button").addClass("btn-default");
+								if (t.tokenlist[index].lemmas.length > 1 && !t.tokenlist[index].explicitlySelected) {
+									$("#token"+index+" button").addClass("btn-success");
+								} else {
+									$("#token"+index+" button").addClass("btn-default");
+								}
 							}
 						} else {
 							$("#token"+index+" .ignore-token").addClass("btn-info");

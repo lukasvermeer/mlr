@@ -9,8 +9,14 @@ var Token = function(i_t, mlr) {
 	this.ignore = false; // BOOL should this token be ignored in statistics?
 	this.lemmas = mlr.tokens[i_t] || mlr.lemmas[i_t]; // ARRAY of possible lemmas for this token
 	this.selected = 0; // INT which lemma (number) is currently selected
+	this.explicitlySelected = false; // BOOL was the currently selected lemma explicitly chosen by the user?
 
-	this.setSelected = function(n) { if(n < this.lemmas.length) { this.selected = n; } }
+	this.setSelected = function(n) {
+		if(n < this.lemmas.length) {
+			this.selected = n;
+			this.explicitlySelected = true;
+		}
+	}
 
 	this.getSelectedLemma = function() {
 		if (this.lemmas) {
@@ -29,7 +35,7 @@ var Token = function(i_t, mlr) {
 					lowestIndex = index;
 				}
 			}
-			this.setSelected(lowestIndex);
+			this.selected = lowestIndex;
 		}
 	}
 
@@ -41,7 +47,7 @@ var Token = function(i_t, mlr) {
 					highestIndex = index;
 				}
 			}
-			this.setSelected(highestIndex);
+			this.selected = highestIndex;
 		}
 	}
 }
