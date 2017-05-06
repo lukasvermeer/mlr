@@ -26,7 +26,8 @@
 				// whenever debug window is opened, update the data
 				$('#debug_show').on('click', function() {
 					if (!$("#debugGroupContent").is(":visible")) {
-						$('#debug_mlr_version code').text(JSON.stringify(mlr.version, undefined, 4));
+						$('#debug_mlr_version code:nth-child(1)').text(Object.keys(mlr.tokens).length);
+						$('#debug_mlr_version code:nth-child(2)').text(Object.keys(mlr.lemmas).length);
 						$('#debug_tokens pre').text(JSON.stringify(mlr.tokens, undefined, 4));
 						$('#debug_lemmas pre').text(JSON.stringify(mlr.lemmas, undefined, 4));
 						var issues = DataIssues(mlr);
@@ -283,7 +284,7 @@
 							</ul>
 							<br />
 							<div class="tab-content">
-								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version"><p>Het versienummer van de geladen MLR dataset is <code>FOUT</code>.</p></div>
+								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version"><p>De geladen MLR dataset bevat <code>0</code> tokens en <code>0</code> lemmas.</p></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_tokens"><h4>Interne representatie van alle tokens in de geladen MLR dataset.</h4><pre></pre></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_lemmas"><h4>Interne representatie van alle lemmas in de geladen MLR dataset.</h4><pre></pre></div>
 								<div role="tabpanel" class="tab-pane fade" id="debug_dataq"><h4>Mogelijke problemen met de datakwaliteit van de geladen MLR dataset.</h4><ul class="list-unstyled"><code>FOUT BIJ UITVOEREN CONTROLE</code></ul></div>

@@ -1,7 +1,7 @@
 (function() {
-	$.getJSON("data/mlr.json", function( json ) {
-		mlr = json;
-	});
+	mlr = {}
+	$.getJSON("data/tokens.json", function( json ) { mlr.tokens = json; });
+	$.getJSON("data/lemmas.json", function( json ) { mlr.lemmas = json; });
 })();
 
 var Token = function(i_t, mlr) {
