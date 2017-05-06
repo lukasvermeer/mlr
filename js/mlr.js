@@ -7,7 +7,7 @@
 var Token = function(i_t, mlr) {
 	this.t = i_t; // STRING a token
 	this.ignore = false; // BOOL should this token be ignored in statistics?
-	this.lemmas = mlr.tokens[i_t] || mlr.lemmas[i_t]; // ARRAY of possible lemmas for this token
+	this.lemmas = mlr.tokens[i_t] || [i_t]; // ARRAY of possible lemmas for this token
 	this.selected = 0; // INT which lemma (number) is currently selected
 	this.explicitlySelected = false; // BOOL was the currently selected lemma explicitly chosen by the user?
 
