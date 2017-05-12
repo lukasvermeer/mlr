@@ -7,147 +7,11 @@
 		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="js/removeDiacritics.js"></script>
 		<script type="text/javascript" src="js/mlr.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
 
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<script src="bootstrap/js/bootstrap.min.js"></script>
 
-		<script type="text/javascript">
-			$(function() {
-				$('span[data-toggle="tooltip"]').tooltip(); 
-				
-				$('#input').on('input', function() {
-					t = new Text($(this).val(), mlr);
-					t.autoSelectLowestFactors(mlr);
-					s = t.generateMlrStats(mlr);
-					
-					updateUI();
-				});
-				
-				// whenever debug window is opened, update the data
-				$('#debug_show').on('click', function() {
-					if (!$("#debugGroupContent").is(":visible")) {
-						$('#debug_mlr_version code:nth-child(1)').text(Object.keys(mlr.tokens).length);
-						$('#debug_mlr_version code:nth-child(2)').text(Object.keys(mlr.lemmas).length);
-						$('#debug_tokens pre').text(JSON.stringify(mlr.tokens, undefined, 4));
-						$('#debug_lemmas pre').text(JSON.stringify(mlr.lemmas, undefined, 4));
-						var issues = DataIssues(mlr);
-						$('#debug_dataq ul').empty();
-						if (issues.length > 0) {
-							for (index = 0; index < issues.length; ++index) {
-								$('#debug_dataq ul').append($('<li>').text(issues[index]));
-							}
-						} else {
-							$('#debug_dataq ul').append($('<li>').text("Geen problemen gevonden."));
-						}
-						try {
-							$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
-							$('#debug_text pre').text(JSON.stringify(t, undefined, 4)); 
-						} catch(err) {}
-					}
-				});
-			});
-			
-			var updateUI = function() {
-				for (var i in Object.keys(s.lists)) {
-					var index = Object.keys(s.lists)[i];
-					$("#percentage_"+index+" .token.count").text(s.lists[index]["totalTokens"] || "");
-					$("#percentage_"+index+" .token.percent").text(s.lists[index]["percentageOfTotalTokens"]> 0 ? s.lists[index]["percentageOfTotalTokens"].toFixed(2) : "");
-					$("#percentage_"+index+" .token.cumulative").text(s.lists[index]["cumulativePercentageOfTotalTokens"] > 0 ? s.lists[index]["cumulativePercentageOfTotalTokens"].toFixed(2) : "");
-					$("#percentage_"+index+" .lemma.count").text(s.lists[index]["totalLemmas"] || "");
-					$("#percentage_"+index+" .lemma.percent").text(s.lists[index]["percentageOfTotalTokens"] > 0 ? s.lists[index]["percentageOfTotalLemmas"].toFixed(2) : "");
-					$("#percentage_"+index+" .lemma.cumulative").text(s.lists[index]["cumulativePercentageOfTotalLemmas"] > 0 ? s.lists[index]["cumulativePercentageOfTotalLemmas"].toFixed(2) : "");
-				}
-				if ($("#input").val()) {
-					$('#mlr').text(s.mlr.toFixed(2));
-					$('#vocab').text((s.mlr*1000).toFixed(0));
-					$('#mlrGroup').show(400);
-				} else {
-					$('#mlrGroup').hide(400);
-				}
-
-				// if tokens breakdown is shown, update them.
-				if ($("#tokensGroupContent").is(":visible")) {
-					$("#tokenListTarget").empty();
-					for (index = 0; index < t.tokenlist.length; ++index) {
-						$("#tokenListTarget").append($("#tokenTemplate").clone().prop("id", "token"+index));
-						$("#token"+index+" button").text(t.tokenlist[index].t);
-						$("#token"+index+" a").prop("token", index);
-						
-						for (j = 0; t.tokenlist[index].lemmas && j < t.tokenlist[index].lemmas.length; ++j) {
-							$("#token"+index+" ul").prepend($("#selectLemmaForTokenTemplate").clone().prop("id", "selectLemma"+j+"ForToken"+index));
-							$("#selectLemma"+j+"ForToken"+index+" a").text(t.tokenlist[index].lemmas[j]).prop("lemma", j).prop("token", index);
-							if (t.tokenlist[index].selected == j) { $("#selectLemma"+j+"ForToken"+index+" a").addClass("btn-info"); }
-						}
-						
-						if (!t.tokenlist[index].ignore) {
-							if (!mlr.lemmas[t.tokenlist[index].getSelectedLemma()] > 0) {
-								$("#token"+index+" button"). addClass("btn-warning");
-							} else {
-								if (t.tokenlist[index].lemmas.length > 1 && !t.tokenlist[index].explicitlySelected) {
-									$("#token"+index+" button").addClass("btn-success");
-								} else {
-									$("#token"+index+" button").addClass("btn-default");
-								}
-							}
-						} else {
-							$("#token"+index+" .ignore-token").addClass("btn-info");
-						}
-					}
-				}
-
-				// if lemma lists are shown, update them.
-				if ($("#lemmasGroupContent").is(":visible")) {
-					$("#lemmaListTarget").empty();
-					for (var i in Object.keys(s.lists)) {
-						var index = Object.keys(s.lists)[i];
-						if (index != "known" && index != "total" && s.lists[index].totalLemmas > 0) {
-							$("#lemmaListTarget").append($("#lemmaListTemplate").clone().prop("id", "lemmaList"+index));
-							$("#lemmaList"+index+" caption").text("Lijst "+index);
-							$("#lemmaList"+index+" tbody").prop("id", "lemmaListRowTarget"+index).empty();
-							var lemmas = Object.keys(s.lists[index].lemmas).sort(function(a,b){return s.lists[index].lemmas[b].length - s.lists[index].lemmas[a].length});
-							for (var j = 0; j < lemmas.length; ++j) {
-								var lemma = lemmas[j];
-								$("#lemmaListRowTarget"+index).append($("#lemmaListRowTemplate").clone().prop("id", "lemmaList"+index+"Row"+j));
-								$("#lemmaList"+index+"Row"+j+" td:nth-child(1)").text(lemma);
-								$("#lemmaList"+index+"Row"+j+" td:nth-child(2)").text(s.lists[index].lemmas[lemma].length);
-							}
-						}
-					}
-				}
-				
-				// if debug information is shown, update it.
-				if ($("#debugGroupContent").is(":visible")) {
-					$('#debug_statistics pre').text(JSON.stringify(s, undefined, 4));
-					$('#debug_text pre').text(JSON.stringify(t, undefined, 4));
-				}
-			}
-
-			var ignoreToken = function(e) {
-				t.tokenlist[($(e).prop("token"))].ignore = !t.tokenlist[($(e).prop("token"))].ignore;
-				s = t.generateMlrStats(mlr);
-				
-				updateUI();
-			}
-			
-			var ignoreAllToken = function(e) {
-				var token = t.tokenlist[($(e).prop("token"))].t;
-				for (index = 0; index < t.tokenlist.length; ++index) {
-					if (t.tokenlist[index].t == token) {
-						t.tokenlist[index].ignore = true;
-					}
-				}
-				s = t.generateMlrStats(mlr);
-				
-				updateUI();
-			}
-			
-			var selectLemmaForToken = function(e) {
-				t.tokenlist[($(e).prop("token"))].setSelected(($(e).prop("lemma")));
-				s = t.generateMlrStats(mlr);
-				
-				updateUI();
-			}
-		</script>
 		<style>
 			td:after {
 				color: lightgrey;
@@ -171,7 +35,7 @@
 		</style>
 	</head>
 	<body>
-		<div class="container">
+		<div id="app-mlr" class="container">
 			<h1>Measure of Lexical Richness <small>versie 0.99b</small></h1>
 			<div class="alert alert-info alert-dismissible" role="alert">
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -179,14 +43,13 @@
 			</div>
 			
 			<div class="form-group">
-				<label for="input">Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst:</label>
-				<textarea id="input" class="form-control" autofocus></textarea>
+				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst." class="form-control" autofocus rows="6"></textarea>
 			</div>
-			<p class="lead" style="display: none;" id="mlrGroup">MLR van deze tekst = <b id="mlr"></b> <small>(indicatie woordvoorraad <span id="vocab"></span> woorden)</small></p>
-			<div>
+			<p class="lead" v-if="mlr_score > 0">MLR van deze tekst = <b>{{mlr_score}}</b> <small>(indicatie woordvoorraad {{mlr_vocab_size}} woorden)</small></p>
+			<div v-if="mlr_score > 0">
 				<div class="panel panel-default">
-				  <table class="table table-striped" id="percentage">
-				  	<caption>Lijstverdeling</caption>
+					<table class="table table-striped" id="percentage">
+					<caption>Lijstverdeling</caption>
 					<thead>
 						<tr>
 							<th>Woordenlijst</th>
@@ -199,76 +62,69 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr id="percentage_1"><th scope="row">Lijst 1</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_2"><th scope="row">Lijst 2</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_3"><th scope="row">Lijst 3</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_4"><th scope="row">Lijst 4</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_5"><th scope="row">Lijst 5</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_6"><th scope="row">Lijst 6</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_7"><th scope="row">Lijst 7</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_8"><th scope="row">Lijst 8</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_9"><th scope="row">Lijst 9</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_known"><th scope="row">Totaal bekend</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_0" class="warning"><th scope="row">Onbekend</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-						<tr id="percentage_total"><th scope="row">Totaal</th><td class="token count"></td><td class="token percent"></td><td class="token cumulative"></td><td class="lemma count"></td><td class="lemma percent"></td><td class="lemma cumulative"></td></tr>
-				  </table>
+						<tr v-for="(list, index) in statistics" :class="{ warning: index == 0}">
+							<th scope="row">{{list.title}}</th>
+							<td class="count">{{list.totalTokens || ""}}</td>
+							<td class="percent">{{list.percentageOfTotalTokens ? (list.percentageOfTotalTokens).toFixed(2) : ""}}</td>
+							<td class="cumulative">{{list.cumulativePercentageOfTotalTokens ? (list.cumulativePercentageOfTotalTokens).toFixed(2) : ""}}</td>
+							<td class="count">{{list.totalLemmas || ""}}</td>
+							<td class="percent">{{list.percentageOfTotalLemmas ? (list.percentageOfTotalLemmas).toFixed(2) : ""}}</td>
+							<td class="cumulative">{{list.cumulativePercentageOfTotalLemmas ? (list.cumulativePercentageOfTotalLemmas).toFixed(2) : ""}}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 
-			<div class="panel-group">
+			<div class="panel-group" v-if="mlr_score > 0">
 				<div class="panel panel-default">
 					<div class="panel-heading">Tokens</div>
-					<div id="tokensGroupContent">
-						<div class="panel-body">
-							<div style="display:none;">
-								<div class="btn-group token-button" id="tokenTemplate" role="group">
-									<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										Template
-									</button>
-									<ul class="dropdown-menu">
-										<li id="selectLemmaForTokenTemplate"><a role="button" onClick="selectLemmaForToken(this)"></a></li>
-										<li role="separator" class="divider"></li>
-
-										<li><a role="button" onClick="ignoreToken(this)" class="ignore-token">Negeer</a></li>
-										<li><a role="button" onClick="ignoreAllToken(this)">Negeer Allen</a></li>
-									</ul>
-								</div>
-							</div>
-							<div id="tokenListTarget"></div>
+					<div class="panel-body">
+						<div class="btn-group token-button" role="group" v-for="(token, token_index) in text.tokenlist">
+							<button v-bind:class="{
+								'btn-warning': !token.ignore && token.unknown,
+								'btn-success': !token.ignore && token.lemmas.length > 1 && !token.explicitlySelected,
+								'btn-default': !token.ignore && (token.lemmas.length == 1 || token.explicitlySelected)}"
+								class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{{token.t}}
+							</button>
+							<ul class="dropdown-menu">
+								<li v-for="(lemma, lemma_index) in token.lemmas">
+									<a role="button" v-on:click="selectLemmaForToken(token_index,lemma_index)" v-bind:class="{'btn-info':lemma_index == token.selected}">{{lemma}}</a>
+								</li>
+								<li role="separator" class="divider"></li>
+								<li><a role="button" v-bind:class="{'btn-info':token.ignore}" v-on:click="ignoreToken(token_index)">Negeer</a></li>
+								<li><a role="button" v-on:click="ignoreAllToken(token_index)">Negeer Allen</a></li>
+							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="panel-group">
+			<div class="panel-group" v-if="mlr_score > 0">
 				<div class="panel panel-default">
 					<div class="panel-heading">Lemmalijsten</div>
-					<div id="lemmasGroupContent">
-						<div class="panel-body">
-							<div style="display:none;">
-								<table class="table table-striped" id="lemmaListTemplate">
-									<caption>Template</caption>
-									<thead>
-										<tr>
-											<th>Lemma</th>
-											<th>Frequentie</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr id="lemmaListRowTemplate">
-											<td class="lemma"></td>
-											<td class="lemma count col-md-1"></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div id="lemmaListTarget"></div>
-						</div>
+					<div class="panel-body">
+						<table class="table table-striped" v-for="(list, index) in statistics" v-if="index < 10 && list.totalLemmas > 0">
+							<caption>{{list.title}}</caption>
+							<thead>
+								<tr>
+									<th>Lemma</th>
+									<th>Frequentie</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(list, index) in transform_listToLemmaFrequencies(list)">
+									<td class="lemma">{{list.lemma}}</td>
+									<td class="lemma count col-md-1">{{list.frequency}}</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 
 			<p class="text-center"><small>Dit project wordt onderhouden op <a href="http://github.com/lukasvermeer/mlr">Github</a> door <a href="http://www.lukasvermeer.nl">Lukas Vermeer</a> en <a href="http://annevermeer.com/">Anne Vermeer</a>.</small></p>
+			
 			<div class="panel-group" id="debugGroup" role="tablist" aria-multiselectable="true">
 				<div class="panel panel-default">
 					<div class="panel-heading" role="tab" id="debugGroupHeading">
@@ -279,26 +135,214 @@
 					<div id="debugGroupContent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="debugGroupContent">
 						<div class="panel-body">
 							<ul class="nav nav-pills pills-small nav-justified button-small" role="tablist">
-								<li role="presentation" class="active"><a href="#debug_mlr_version" aria-controls="debug_mlr_version" role="tab" data-toggle="tab">Versie</a></li>
+								<li role="presentation" class="active"><a href="#debug_mlr_version" aria-controls="debug_mlr_version" role="tab" data-toggle="tab">Data</a></li>
 								<li role="presentation"><a href="#debug_tokens" aria-controls="debug_tokens" role="tab" data-toggle="tab">Tokens</a></li>
 								<li role="presentation"><a href="#debug_lemmas" aria-controls="debug_lemmas" role="tab" data-toggle="tab">Lemmas</a></li>
-								<li role="presentation"><a href="#debug_dataq" aria-controls="debug_dataq" role="tab" data-toggle="tab">Controle</a></li>
 								<li role="presentation"><a href="#debug_text" aria-controls="debug_text" role="tab" data-toggle="tab">Tekst</a></li>
 								<li role="presentation"><a href="#debug_statistics" aria-controls="debug_statistics" role="tab" data-toggle="tab">Statistieken</a></li>
 							</ul>
 							<br />
 							<div class="tab-content">
-								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version"><p>De geladen MLR dataset bevat <code>0</code> tokens en <code>0</code> lemmas.</p></div>
-								<div role="tabpanel" class="tab-pane fade" id="debug_tokens"><h4>Interne representatie van alle tokens in de geladen MLR dataset.</h4><pre></pre></div>
-								<div role="tabpanel" class="tab-pane fade" id="debug_lemmas"><h4>Interne representatie van alle lemmas in de geladen MLR dataset.</h4><pre></pre></div>
-								<div role="tabpanel" class="tab-pane fade" id="debug_dataq"><h4>Mogelijke problemen met de datakwaliteit van de geladen MLR dataset.</h4><ul class="list-unstyled"><code>FOUT BIJ UITVOEREN CONTROLE</code></ul></div>
-								<div role="tabpanel" class="tab-pane fade" id="debug_text"><h4>Interne representatie van de ingevoerde tekst.</h4><pre></pre></div>
-								<div role="tabpanel" class="tab-pane fade" id="debug_statistics"><h4>Interne representatie de statistieken op basis van de ingevoerde tekst.</h4><pre></pre></div>
+								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version">
+									<p>De geladen MLR dataset bevat <code>{{ source_tokenCount }}</code> tokens en <code>{{ source_lemmaCount }}</code> lemmas.</p>
+									<ul class="list-unstyled">
+										<li v-for="item in dataIssues">
+											<span class="label" v-bind:class="item.label">{{ item.type }}</span>&nbsp;{{ item.description }}
+										</li>
+									</ul>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_tokens">
+									<p>Interne representatie van alle tokens in de geladen MLR dataset.</p>
+									<pre>{{JSON.stringify(mlr.tokens, undefined, 4)}}</pre>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_lemmas">
+									<p>Interne representatie van alle lemmas in de geladen MLR dataset.</p>
+									<pre>{{JSON.stringify(mlr.lemmas, undefined, 4)}}</pre>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_text">
+									<p>Interne representatie van de ingevoerde tekst.</p>
+									<pre>{{JSON.stringify(text, undefined, 4)}}</pre>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="debug_statistics">
+									<p>Interne representatie de statistieken op basis van de ingevoerde tekst.</p>
+									<pre>{{JSON.stringify(statistics, undefined, 4)}}</pre>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<script type="text/javascript">
+			mlrvm = new Vue({
+				created: function() {
+					$.getJSON("data/tokens.json", function( json ) { mlrvm.mlr.tokens = json; });
+					$.getJSON("data/lemmas.json", function( json ) { mlrvm.mlr.lemmas = json; });
+				},
+				el: '#app-mlr',
+				data: {
+					input: '',
+					mlr: { tokens: {}, lemmas: {} },
+					text: new Text("", this.mlr),
+					lists: ['0','1','2','3','4','5','6','7','8','9','known','total'], // enum of all lists.
+					listTitles: ['Onbekend','Lijst 1','Lijst 2','Lijst 3','Lijst 4','Lijst 5','Lijst 6','Lijst 7','Lijst 8','Lijst 9','Bekend','Totaal'] // titles for all lists.
+				},
+				watch: {
+					input: function(val) {
+						this.text = new Text(val, this.mlr);
+						this.text.autoSelectLowestFactors(this.mlr);
+					}
+				},
+				computed: {
+					statistics: function() {
+						var listStats = {}; // statistics for each list.
+						for (var l in this.lists) {
+							listStats[this.lists[l]] = {'title': this.listTitles[l], 'totalLemmas': 0, 'lemmas': {}, 'totalTokens': 0, 'tokens': []};
+						}		
+						var stat_mlrws; // the actual mlr value
+
+						for (index = 0; index < this.text.tokenlist.length; ++index) { // for each word in the text
+							var t = this.text.tokenlist[index].t;
+							var l = this.text.tokenlist[index].getSelectedLemma();
+							var f = this.mlr.lemmas[l] || 0;
+
+							if (!this.text.tokenlist[index].ignore) {
+								var list = ['total',f];
+								if (f > 0) { list.push('known'); };
+								for (var i in list) {
+									listStats[list[i]]['totalTokens']++;
+									listStats[list[i]]['tokens'].push(t);
+				
+									if (!listStats[list[i]]['lemmas'][l]) {
+										listStats[list[i]]['totalLemmas']++;
+										listStats[list[i]]['lemmas'][l] = [t];
+									} else {
+										listStats[list[i]]['lemmas'][l].push(t);
+									}
+								}
+							}
+						}
+
+						for (var i in this.lists) {
+							listStats[this.lists[i]]['percentageOfTotalTokens'] = listStats[this.lists[i]]['totalTokens'] / listStats['total']['totalTokens'] * 100 || 0;
+							listStats[this.lists[i]]['percentageOfKnownTokens'] = listStats[this.lists[i]]['totalTokens'] / listStats['known']['totalTokens'] * 100 || 0;
+							listStats[this.lists[i]]['percentageOfTotalLemmas'] = listStats[this.lists[i]]['totalLemmas'] / listStats['total']['totalLemmas'] * 100 || 0;
+							listStats[this.lists[i]]['percentageOfKnownLemmas'] = listStats[this.lists[i]]['totalLemmas'] / listStats['known']['totalLemmas'] * 100 || 0;
+						}
+
+						for (i = 1; i <= 9; ++i) {
+							listStats[i]['cumulativePercentageOfKnownTokens'] = 0;
+							listStats[i]['cumulativePercentageOfKnownLemmas'] = 0;
+							listStats[i]['cumulativePercentageOfTotalTokens'] = 0;
+							listStats[i]['cumulativePercentageOfTotalLemmas'] = 0;
+
+							for (var j = 1; j <= i; ++j) {
+								listStats[i]['cumulativePercentageOfKnownTokens'] += listStats[j]['percentageOfKnownTokens'];
+								listStats[i]['cumulativePercentageOfKnownLemmas'] += listStats[j]['percentageOfKnownLemmas'];
+								listStats[i]['cumulativePercentageOfTotalTokens'] += listStats[j]['percentageOfTotalTokens'];
+								listStats[i]['cumulativePercentageOfTotalLemmas'] += listStats[j]['percentageOfTotalLemmas'];
+							}
+						}
+			
+						return listStats;
+					},
+					source_tokenCount: function () {
+						return this.mlr.tokens ? Object.keys(this.mlr.tokens).length : 0;
+					},
+					source_lemmaCount: function () {
+						return this.mlr.lemmas ? Object.keys(this.mlr.lemmas).length : 0;
+					},
+					dataIssues: function() {
+						issues = [];
+						if (this.source_tokenCount == 0) { issues.push({ description: "Er zijn geen tokens geladen.", label: "label-danger", type: "fatale fout" }); }
+						if (this.source_lemmaCount == 0) { issues.push({ description: "Er zijn geen lemma's geladen.", label: "label-danger", type: "fatale fout" }); }
+						for (var t in this.mlr.tokens) {
+							if (this.mlr.tokens[t].length == 0) {  issues.push({ description: "Token "+t+" is aan geen enkele lemma gekoppeld.", label: "label-warning", type: "waarschuwing" }); }
+							if (this.mlr.tokens[t].length == 1 && t == this.mlr.tokens[t][0]) { issues.push({ description: "Token "+t+" is alleen gekoppeld aan een identieke lemma.", label: "label-warning", type: "waarschuwing" }); }
+						}
+						for (var l in this.mlr.lemmas) {
+							if ((l.substr(l.length-2) == "_N" || l.substr(l.length-2) == "_V") && !this.mlr.tokens[l.substr(0,l.length-2)]) {  issues.push({ description: "Er is een lemma "+l+" maar geen token "+l.substr(0,l.length-2)+".", label: "label-warning", type: "waarschuwing" }); }
+						}
+						if (issues.length == 0) { issues.push({ description: "Er zijn geen bekende data problemen gedetecteerd.", label: "label-success", type: "geen probleem" }); } 
+						return issues;
+					},
+					mlr_raw: function() {
+						if (this.text.tokenlist.length == 0) { return 0; }
+						var n = [];
+						if (this.statistics['2']['percentageOfKnownTokens'] < (6 * 1.25)) {
+							n[2] = this.statistics['2']['percentageOfKnownTokens'] / (6 * 1.25);
+						} else {
+							n[2] = 1;
+						}
+						if (this.statistics['3']['percentageOfKnownTokens'] < (2.6 * 1.75)) {
+							n[3] = this.statistics['3']['percentageOfKnownTokens'] / (2.6 * 1.75);
+						} else {
+							n[3] = 1;
+						}
+						if (this.statistics['4']['percentageOfKnownTokens'] < (1.5 * 2)) {
+							n[4] = this.statistics['4']['percentageOfKnownTokens'] / (1.5 * 2);
+						} else {
+							n[4] = 1;
+						}
+						if (this.statistics['5']['percentageOfKnownTokens'] < (1.0 * 3)) {
+							n[5] = this.statistics['5']['percentageOfKnownTokens'] / 3;
+						} else {
+							n[5] = 1;
+						}
+						if (this.statistics['6']['percentageOfKnownTokens'] < (1.0 * 4)) {
+							n[6] = (this.statistics['6']['percentageOfKnownTokens'] / 4) * 1.5;
+						} else {
+							n[6] = 1.5;
+						}
+						if (this.statistics['7']['percentageOfKnownTokens'] < (0.7 * 4)) {
+							n[7] = (this.statistics['7']['percentageOfKnownTokens'] / (0.7 * 4)) * 1.6;
+						} else {
+							n[7] = 1.6;
+						}
+						if (this.statistics['8']['percentageOfKnownTokens'] < (1.0 * 6)) {
+							n[8] = (this.statistics['8']['percentageOfKnownTokens'] / 6) * 4.6;
+						} else {
+							n[8] = 4.6;
+						}
+						if (this.statistics['9']['percentageOfKnownTokens'] < (0.9 * 9)) {
+							n[9] = (this.statistics['9']['percentageOfKnownTokens'] / (0.9 * 9)) * 13.8;
+						} else {
+							n[9] = 13.8;
+						}
+						return 1 + n.reduce(function(acc, val) { return acc + val; }, 0);
+					},
+					mlr_score: function() {
+						return (this.mlr_raw || 0).toFixed(2);
+					},
+					mlr_vocab_size: function() {
+						return (this.mlr_raw * 1000 || 0).toFixed(0);
+					}
+				},
+				methods: {
+					transform_listToLemmaFrequencies: function(list) {
+						return Object.entries(list.lemmas)
+							.map(function(a) {return {'lemma':a[0],'frequency':a[1].length}} )
+							.sort(function(a,b) {return b.frequency - a.frequency} );
+					},
+					selectLemmaForToken: function(token_index, lemma_index) {
+						this.text.tokenlist[token_index].setSelected(lemma_index);
+					},
+					ignoreToken: function(token_index) {
+						this.text.tokenlist[token_index].ignore = !this.text.tokenlist[token_index].ignore;
+					},
+					ignoreAllToken: function(token_index) {
+						for (index = 0; index < this.text.tokenlist.length; ++index) {
+							if (this.text.tokenlist[index].t == this.text.tokenlist[token_index].t) {
+								this.text.tokenlist[index].ignore = true;
+							}
+						}
+					}
+				}
+			});
+
+			$(function() {
+				$('span[data-toggle="tooltip"]').tooltip();
+			});
+		</script>
 	</body>
 </html>
