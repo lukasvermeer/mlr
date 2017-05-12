@@ -6,6 +6,8 @@ Het analyseprogramma MLR (Measure of Lexical Richness, Maat voor Lexicale Rijkdo
 2. wat is de tekstmoeilijkheid van een verhaal voor een bepaalde leerling/groep leerlingen? en
 3. hoe groot is bij benadering de woordenschat van de schrijver/spreker van een tekst?
 
+Een werkende versie van het programma is te benaderen op het volgende adres: [http://lukasvermeer.github.io/mlr/](http://lukasvermeer.github.io/mlr/)
+
 ## Doelgroep
 
 Het programma richt zich op teksten van (leerlingen in) het basisonderwijs, met een woordenschatgrootte tot ongeveer 15.000 lemma’s, dus kinderen tot en met groep 8, en is bedoeld voor onderzoekers en leermiddelenontwikkelaars. Ook leerkrachten kunnen het gebruiken, bijvoorbeeld om de moeilijke en makkelijke woorden uit een tekst op te sporen.
