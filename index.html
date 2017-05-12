@@ -92,7 +92,10 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li v-for="(lemma, lemma_index) in token.lemmas">
-									<a role="button" v-on:click="selectLemmaForToken(token_index,lemma_index)" v-bind:class="{'btn-info':lemma_index == token.selected}">{{lemma}}</a>
+									<a role="button" v-on:click="selectLemmaForToken(token_index,lemma_index)" v-bind:class="{'btn-info':lemma_index == token.selected}">
+										<span class="badge">{{mlr.lemmas[lemma]}}</span>
+										{{lemma}}
+									</a>
 								</li>
 								<li role="separator" class="divider"></li>
 								<li><a role="button" v-bind:class="{'btn-info':token.ignore}" v-on:click="ignoreToken(token_index)">Negeer</a></li>
