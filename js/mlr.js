@@ -10,6 +10,7 @@ var Token = function(i_t, mlr) {
 		if(n < this.lemmas.length) {
 			this.selected = n;
 			this.explicitlySelected = true;
+			this.ignore = false;
 		}
 	}
 
