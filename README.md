@@ -39,5 +39,5 @@ Meeste zijn te downloaden via [ResearchGate](https://www.researchgate.net/profil
 - Vermeer, A. (2004). The relation between lexical richness and vocabulary size in Dutch L1 and L2 children. In: P. Bogaards & B. Laufer (eds.) *Vocabulary in a Second Language: Selection, Acquisition and Testing* (pp. 173-189). Amsterdam: John Benjamins.
 - Hout, R. van & A. Vermeer (2007). Comparing measures of lexical richness. In: H. Daller, J. Milton & J. Treffers-Daller (eds.), *Modelling and assessing vocabulary knowledge* (pp. 93-116). Cambridge: Cambridge University Press.
 - Goossens, N. & A. Vermeer (2009). Wat is een optimale tekstdekking? Woordkennis en tekstbegrip in groep 6. *Toegepaste Taalwetenschap in Artikelen* 82, 81-92.
-- Vermeer, A. (2016). Lexicale rijkdom, frequentielagen en tekstmoeilijkheid. Dutch Journal of Applied Linguistics 5, 1, 18-33.
+- Vermeer, A. (2016). Lexicale rijkdom, frequentielagen en tekstmoeilijkheid. *Dutch Journal of Applied Linguistics* 5, 1, 18-33.
 - Guchte, C. van de & A. Vermeer (2003). Een passende woordkeus: het kiezen van woorden voor woordenschatlessen. *Toegepaste Taalwetenschap in Artikelen* 69, 9-23. ([PDF](https://let.uvt.nl/general/people/avermeer/wrdlst/wrdkeusttwia.pdf))
