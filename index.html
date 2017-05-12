@@ -41,6 +41,9 @@
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<strong>Welkom!</strong> Meer informatie over dit programma is te vinden op de projectpagina op <a href="https://github.com/lukasvermeer/mlr/blob/master/README.md" target="_blank" class="alert-link">Github.</a>
 			</div>
+			<div class="alert alert-danger" role="alert" v-for="error in fatalErrors">
+				<strong>Fatale fout!</strong> {{error}}
+			</div>
 			
 			<div class="form-group">
 				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst." class="form-control" autofocus rows="6"></textarea>
@@ -176,14 +179,19 @@
 		<script type="text/javascript">
 			mlrvm = new Vue({
 				created: function() {
-					$.getJSON("data/tokens.json", function( json ) { mlrvm.mlr.tokens = json; });
-					$.getJSON("data/lemmas.json", function( json ) { mlrvm.mlr.lemmas = json; });
+					$.getJSON("data/tokens.json",
+						function( json ) { mlrvm.mlr.tokens = json; })
+						.fail(function() { mlrvm.fatalErrors.push("Tokens konden niet geladen worden."); });
+					$.getJSON("data/lemmas.json",
+						function( json ) { mlrvm.mlr.lemmas = json; })
+						.fail(function() { mlrvm.fatalErrors.push("Lemma's konden niet geladen worden."); });
 				},
 				el: '#app-mlr',
 				data: {
 					input: '',
 					mlr: { tokens: {}, lemmas: {} },
 					text: new Text("", this.mlr),
+					fatalErrors: [],
 					lists: ['0','1','2','3','4','5','6','7','8','9','known','total'], // enum of all lists.
 					listTitles: ['Onbekend','Lijst 1','Lijst 2','Lijst 3','Lijst 4','Lijst 5','Lijst 6','Lijst 7','Lijst 8','Lijst 9','Bekend','Totaal'] // titles for all lists.
 				},
