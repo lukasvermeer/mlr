@@ -51,8 +51,8 @@
 			<p class="lead" v-if="mlr_score > 0">MLR van deze tekst = <b>{{mlr_score}}</b> <small>(indicatie woordvoorraad {{mlr_vocab_size}} woorden)</small></p>
 			<div v-if="mlr_score > 0">
 				<div class="panel panel-default hidden-xs">
+					<div class="panel-heading">Lijstverdeling</div>
 					<table class="table table-striped">
-					<caption>Lijstverdeling</caption>
 					<thead>
 						<tr>
 							<th>Woordenlijst</th>
@@ -78,8 +78,8 @@
 				</div>
 
 				<div class="panel panel-default visible-xs-block">
+					<div class="panel-heading">Lijstverdeling tokens</div>
 					<table class="table table-striped">
-					<caption>Lijstverdeling tokens</caption>
 					<thead>
 						<tr>
 							<th>Lijst</th>
@@ -96,9 +96,11 @@
 							<td class="cumulative">{{list.cumulativePercentageOfTotalTokens ? (list.cumulativePercentageOfTotalTokens).toFixed(2) : ""}}</td>
 						</tr>
 					</table>
+				</div>
 
+				<div class="panel panel-default visible-xs-block">					
+					<div class="panel-heading">Lijstverdeling lemma's</div>
 					<table class="table table-striped">
-					<caption>Lijstverdeling lemma's</caption>
 					<thead>
 						<tr>
 							<th>Lijst</th>
