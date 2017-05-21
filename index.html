@@ -50,8 +50,8 @@
 			</div>
 			<p class="lead" v-if="mlr_score > 0">MLR van deze tekst = <b>{{mlr_score}}</b> <small>(indicatie woordvoorraad {{mlr_vocab_size}} woorden)</small></p>
 			<div v-if="mlr_score > 0">
-				<div class="panel panel-default">
-					<table class="table table-striped" id="percentage">
+				<div class="panel panel-default hidden-xs">
+					<table class="table table-striped">
 					<caption>Lijstverdeling</caption>
 					<thead>
 						<tr>
@@ -70,6 +70,46 @@
 							<td class="count">{{list.totalTokens || ""}}</td>
 							<td class="percent">{{list.percentageOfTotalTokens ? (list.percentageOfTotalTokens).toFixed(2) : ""}}</td>
 							<td class="cumulative">{{list.cumulativePercentageOfTotalTokens ? (list.cumulativePercentageOfTotalTokens).toFixed(2) : ""}}</td>
+							<td class="count">{{list.totalLemmas || ""}}</td>
+							<td class="percent">{{list.percentageOfTotalLemmas ? (list.percentageOfTotalLemmas).toFixed(2) : ""}}</td>
+							<td class="cumulative">{{list.cumulativePercentageOfTotalLemmas ? (list.cumulativePercentageOfTotalLemmas).toFixed(2) : ""}}</td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="panel panel-default visible-xs-block">
+					<table class="table table-striped">
+					<caption>Lijstverdeling tokens</caption>
+					<thead>
+						<tr>
+							<th>Lijst</th>
+							<th><span data-toggle="tooltip" title="Het aantal tokens dat in deze lijst voorkomt.">Aantal</span></th>
+							<th><span data-toggle="tooltip" title="Het percentage van alle tokens dat in deze lijst voorkomt.">Percentage</span></th>
+							<th><span data-toggle="tooltip" title="Het cumulatieve percentage van alle tokens dat in deze of eerdere lijsten voorkomt.">Cumulatief</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(list, index) in statistics" :class="{ warning: index == 0}">
+							<th scope="row">{{list.title}}</th>
+							<td class="count">{{list.totalTokens || ""}}</td>
+							<td class="percent">{{list.percentageOfTotalTokens ? (list.percentageOfTotalTokens).toFixed(2) : ""}}</td>
+							<td class="cumulative">{{list.cumulativePercentageOfTotalTokens ? (list.cumulativePercentageOfTotalTokens).toFixed(2) : ""}}</td>
+						</tr>
+					</table>
+
+					<table class="table table-striped">
+					<caption>Lijstverdeling lemma's</caption>
+					<thead>
+						<tr>
+							<th>Lijst</th>
+							<th><span data-toggle="tooltip" title="Het aantal lemma's dat in deze lijst voorkomt.">Aantal</span></th>
+							<th><span data-toggle="tooltip" title="Het percentage van alle lemma's dat in deze lijst voorkomt.">Percentage</span></th>
+							<th><span data-toggle="tooltip" title="Het cumulatieve percentage van alle lemma's dat in deze of eerdere lijsten voorkomt.">Cumulatief</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(list, index) in statistics" :class="{ warning: index == 0}">
+							<th scope="row">{{list.title}}</th>
 							<td class="count">{{list.totalLemmas || ""}}</td>
 							<td class="percent">{{list.percentageOfTotalLemmas ? (list.percentageOfTotalLemmas).toFixed(2) : ""}}</td>
 							<td class="cumulative">{{list.cumulativePercentageOfTotalLemmas ? (list.cumulativePercentageOfTotalLemmas).toFixed(2) : ""}}</td>
@@ -121,7 +161,7 @@
 							<tbody>
 								<tr v-for="(list, index) in transform_listToLemmaFrequencies(list)">
 									<td class="lemma">{{list.lemma}}</td>
-									<td class="lemma count col-md-1">{{list.frequency}}</td>
+									<td class="lemma count col-md-1 col-sm-1 col-xs-1">{{list.frequency}}</td>
 								</tr>
 							</tbody>
 						</table>
