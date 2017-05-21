@@ -89,7 +89,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(list, index) in statistics" :class="{ warning: index == 0}">
+						<tr v-for="(list, index) in statistics">
 							<th scope="row">{{list.title}}</th>
 							<td class="count">{{list.totalTokens || ""}}</td>
 							<td class="percent">{{list.percentageOfTotalTokens ? (list.percentageOfTotalTokens).toFixed(2) : ""}}</td>
@@ -110,7 +110,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(list, index) in statistics" :class="{ warning: index == 0}">
+						<tr v-for="(list, index) in statistics">
 							<th scope="row">{{list.title}}</th>
 							<td class="count">{{list.totalLemmas || ""}}</td>
 							<td class="percent">{{list.percentageOfTotalLemmas ? (list.percentageOfTotalLemmas).toFixed(2) : ""}}</td>
