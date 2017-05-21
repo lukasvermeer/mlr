@@ -127,8 +127,10 @@
 						<div class="btn-group token-button" role="group" v-for="(token, token_index) in text.tokenlist">
 							<button v-bind:class="{
 								'btn-warning': !token.ignore && token.unknown,
-								'btn-success': !token.ignore && token.lemmas.length > 1 && !token.explicitlySelected,
-								'btn-default': !token.ignore && (token.lemmas.length == 1 || token.explicitlySelected)}"
+								'btn-primary': !token.ignore && token.lemmas.length > 1 && mlr.lemmas[token.lemmas[0]] != mlr.lemmas[token.lemmas[token.lemmas.length-1]] && !token.explicitlySelected,
+								'btn-info': !token.ignore && token.lemmas.length > 1 && mlr.lemmas[token.lemmas[0]] == mlr.lemmas[token.lemmas[token.lemmas.length-1]] && !token.explicitlySelected,
+								'btn-success': !token.ignore && token.explicitlySelected,
+								'btn-default': !token.ignore && token.lemmas.length == 1}"
 								class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								{{token.t}}
 							</button>
