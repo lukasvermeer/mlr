@@ -150,36 +150,42 @@
 				</div>
 			</div>
 
-			<div class="panel-group" v-if="mlr_score > 0">
+			<div class="panel-group" v-if="mlr_score > 0" id="lemmaLijstGroup" role="tablist" aria-multiselectable="true">
 				<div class="panel panel-default">
-					<div class="panel-heading">Lemmalijsten</div>
-					<div class="panel-body">
-						<table class="table table-striped" v-for="(list, index) in statistics" v-if="index < 10 && list.totalLemmas > 0">
-							<caption>{{list.title}}</caption>
-							<thead>
-								<tr>
-									<th>Lemma</th>
-									<th>Frequentie</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr v-for="(list, index) in transform_listToLemmaFrequencies(list)">
-									<td class="lemma">{{list.lemma}}</td>
-									<td class="lemma count col-md-1 col-sm-1 col-xs-1">{{list.frequency}}</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="panel-heading" role="tab" id="lemmaLijstGroupHeading">
+						<a id="lemmalijst_show" role="button" data-toggle="collapse" data-parent="#lemmaLijstGroup" href="#lemmaLijstGroupContent" aria-expanded="true" aria-controls="lemmaLijstGroupContent">
+							Lemmalijsten <span class="caret"></span>
+						</a>
+					</div>
+					<div id="lemmaLijstGroupContent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="lemmaLijstGroupContent">
+						<div class="panel-body">
+							<table class="table table-striped" v-for="(list, index) in statistics" v-if="index < 10 && list.totalLemmas > 0">
+								<caption>{{list.title}}</caption>
+								<thead>
+									<tr>
+										<th>Lemma</th>
+										<th>Frequentie</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="(list, index) in transform_listToLemmaFrequencies(list)">
+										<td class="lemma">{{list.lemma}}</td>
+										<td class="lemma count col-md-1 col-sm-1 col-xs-1">{{list.frequency}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<p class="text-center"><small>Dit project wordt onderhouden op <a href="http://github.com/lukasvermeer/mlr">Github</a> door <a href="http://www.lukasvermeer.nl">Lukas Vermeer</a> en <a href="http://annevermeer.com/">Anne Vermeer</a>.</small></p>
+			<p class="text-center">Dit project wordt onderhouden op <a href="http://github.com/lukasvermeer/mlr">Github</a> door <a href="http://www.lukasvermeer.nl">Lukas Vermeer</a> en <a href="http://annevermeer.com/">Anne Vermeer</a>.</p>
 			
 			<div class="panel-group" id="debugGroup" role="tablist" aria-multiselectable="true">
 				<div class="panel panel-default">
 					<div class="panel-heading" role="tab" id="debugGroupHeading">
 						<a id="debug_show" role="button" data-toggle="collapse" data-parent="#debugGroup" href="#debugGroupContent" aria-expanded="true" aria-controls="debugGroupContent">
-							<small>Onderwaterscherm <span class="caret"></span></small>
+							Onderwaterscherm <span class="caret"></span>
 						</a>
 					</div>
 					<div id="debugGroupContent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="debugGroupContent">
