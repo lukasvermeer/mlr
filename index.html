@@ -179,6 +179,38 @@
 				</div>
 			</div>
 			
+			<div class="panel-group" v-if="mlr > 0" id="lemmaDekkingGroup" role="tablist" aria-multiselectable="true">
+				<div class="panel panel-default">
+					<div class="panel-heading" role="tab" id="lemmaDekkingGroupHeading">
+						<a id="lemmadekking_show" role="button" data-toggle="collapse" data-parent="#lemmaDekkingGroup" href="#lemmaDekkingGroupContent" aria-expanded="true" aria-controls="lemmaDekkingGroupContent">
+							Lemmadekking <span class="caret"></span>
+						</a>
+					</div>
+					<div id="lemmaDekkingGroupContent" class="panel-collapse collapse" role="tabpanel" aria-labelledby="lemmaDekkingGroupContent">
+						<div class="panel-body">
+							<p>
+								Bij een kennis van het aantal woorden in de eerste kolom van deze tabel is de geschatte lemmadekking voor deze tekst weergegeven in de tweede kolom.
+								De staafdiagram in de tweede kolom geeft daarnaast een visuele indicatie van de verhouding tussen bekende en onbekende lemma's.
+								Voor een goed tekstbegrip moet meer dan 87% van de lemma's bekend zijn.
+							</p>
+							<table class="table table-striped">
+							<thead>
+								<tr>
+									<th><span data-toggle="tooltip" title="Het aantal woorden dat bekend is.">Woordenschat</span></th>
+									<th><span data-toggle="tooltip" title="De lemmadekking.">Lemmadekking</span></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(list, index) in statistics" v-if="listSizes[index]">
+									<td class="count col-md-1 col-sm-1 col-xs-1">{{transform_printInt(listSizes[index])}}</td>
+									<td class="cumulative" v-bind:style="{ backgroundImage: list.cumulativePercentageOfTotalLemmas ? 'linear-gradient(to right, rgba(91,192,222,0.2), rgba(91,192,222,0.2) '+list.cumulativePercentageOfTotalLemmas+'%, rgba(255,255,255,0) '+(100-list.cumulativePercentageOfTotalLemmas)+'%)' : '' }">{{transform_printFloat(list.cumulativePercentageOfTotalLemmas,2)}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<p class="text-center">Dit project wordt onderhouden op <a href="http://github.com/lukasvermeer/mlr">Github</a> door <a href="http://www.lukasvermeer.nl">Lukas Vermeer</a> en <a href="http://annevermeer.com/">Anne Vermeer</a>.</p>
 			
 			<div class="panel-group" id="debugGroup" role="tablist" aria-multiselectable="true">
@@ -247,7 +279,7 @@
 					fatalErrors: [],
 					lists: ['0','1','2','3','4','5','6','7','8','9','known','total'], // enum of all lists.
 					listTitles: ['Onbekend','Lijst 1','Lijst 2','Lijst 3','Lijst 4','Lijst 5','Lijst 6','Lijst 7','Lijst 8','Lijst 9','Bekend','Totaal'], // titles for all lists.
-					listSizes: [1000,2000,3000,4000,5000,6500,8100,12600,26000]
+					listSizes: [0,1000,2000,3000,4000,5000,6500,8100,12600,26000]
 				},
 				watch: {
 					input: function(val) {
