@@ -44,7 +44,10 @@
 			<div class="form-group">
 				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst." class="form-control" autofocus rows="6"></textarea>
 			</div>
-			<p class="lead" v-if="mlr > 0">MLR van deze tekst = <b>{{transform_printFloat(mlr,2)}}</b> <small>(indicatie woordvoorraad {{transform_printInt(mlr_vocab_size)}} woorden)</small></p>
+			<p class="lead">
+				<span v-if="mlr > 0">MLR van deze tekst is <b>{{transform_printFloat(mlr,2)}}</b>.</span>
+				<span v-if="mlr_25 > 0">Indicatie woordvoorraad op basis van MLR-25 is <b>{{transform_printInt(mlr_25)}}</b> woorden.</span>
+			</p>
 			<div v-if="mlr > 0">
 				<div class="panel panel-default hidden-xs">
 					<div class="panel-heading">Lijstverdeling</div>
@@ -401,8 +404,16 @@
 						}
 						return 1 + n.reduce(function(acc, val) { return acc + val; }, 0);
 					},
-					mlr_vocab_size: function() {
-						return (this.mlr * 1000 || 0).toFixed(0);
+					mlr_25: function() {
+						if (this.statistics['known']['totalLemmas'] < 50) return;
+						var m = 25;
+						var mlr = 0;
+						for (var i = 9; i > 0 && m > 0; --i) {
+							var n = Math.min(m, this.statistics[i]['totalLemmas']);
+							mlr = mlr + (n * this.listSizes[i]);
+							m = m - n;
+						}
+						return mlr / 25;
 					}
 				},
 				methods: {
