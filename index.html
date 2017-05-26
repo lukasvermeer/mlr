@@ -232,7 +232,7 @@
 							<br />
 							<div class="tab-content">
 								<div role="tabpanel" class="tab-pane fade in active" id="debug_mlr_version">
-									<p>De geladen MLR dataset bevat <code>{{ source_tokenCount }}</code> tokens en <code>{{ source_lemmaCount }}</code> lemmas.</p>
+									<p>De geladen MLR dataset bevat <code>{{transform_printInt(source_tokenCount)}}</code> tokens en <code>{{transform_printInt(source_lemmaCount)}}</code> lemmas.</p>
 									<ul class="list-unstyled">
 										<li v-for="item in dataIssues">
 											<span class="label" v-bind:class="item.label">{{ item.type }}</span>&nbsp;{{ item.description }}
