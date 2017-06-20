@@ -43,7 +43,7 @@
 			</div>
 			
 			<div class="form-group">
-				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst." class="form-control" autofocus rows="6"></textarea>
+				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst (voor toelichting zie <a href="http://github.com/lukasvermeer/mlr" target="_blank">  readme.md</a>)." class="form-control" autofocus rows="6"></textarea>
 			</div>
 			<p class="lead">
 				<span v-if="mlr > 0">MLR van deze tekst is <b>{{transform_printFloat(mlr,2)}}</b>.</span>
@@ -143,7 +143,7 @@
 								</li>
 								<li role="separator" class="divider"></li>
 								<li><a role="button" v-bind:class="{'btn-info':token.ignore}" v-on:click="ignoreToken(token_index)">Negeer</a></li>
-								<li><a role="button" v-on:click="ignoreAllToken(token_index)">Negeer Allen</a></li>
+								<li><a role="button" v-on:click="ignoreAllToken(token_index)">Negeer Alle</a></li>
 							</ul>
 						</div>
 					</div>
@@ -190,7 +190,7 @@
 						<div class="panel-body">
 							<p>
 								Bij een kennis van het aantal woorden in de eerste kolom van deze tabel is de geschatte lemmadekking voor deze tekst weergegeven in de tweede kolom.
-								De staafdiagram in de tweede kolom geeft daarnaast een visuele indicatie van de verhouding tussen bekende en onbekende lemma's.
+								De staafdiagram in de tweede kolom geeft daarnaast een visuele indicatie van het percentage bekende lemma's.
 								Voor een goed tekstbegrip moet meer dan 87% van de lemma's bekend zijn.
 							</p>
 							<table class="table table-striped">
