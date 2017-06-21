@@ -38,12 +38,13 @@
 	<body>
 		<div id="app-mlr" class="container">
 			<h3>Measure of Lexical Richness</h3>
+			<p>Voor toelichting zie <a href="http://github.com/lukasvermeer/mlr" target="_blank">readme.md</a>.</p>
 			<div class="alert alert-danger" role="alert" v-for="error in fatalErrors">
 				<strong>Fatale fout!</strong> {{error}}
 			</div>
 			
 			<div class="form-group">
-				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst (voor toelichting zie <a href="http://github.com/lukasvermeer/mlr" target="_blank">  readme.md</a>)." class="form-control" autofocus rows="6"></textarea>
+				<textarea v-model="input" placeholder="Vul of plak hier (liefst uit notepad, ivm rare codes en harde returns) uw tekst." class="form-control" autofocus rows="6"></textarea>
 			</div>
 			<p class="lead">
 				<span v-if="mlr > 0">MLR van deze tekst is <b>{{transform_printFloat(mlr,2)}}</b>.</span>
