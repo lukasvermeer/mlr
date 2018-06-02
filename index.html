@@ -449,9 +449,11 @@
 					},
 					selectLemmaForToken: function(token_index, lemma_index) {
 						this.text.tokenlist[token_index].setSelected(lemma_index);
+						ga('send', 'event', 'MLR', 'selectLemmaForToken');
 					},
 					ignoreToken: function(token_index) {
 						this.text.tokenlist[token_index].ignore = !this.text.tokenlist[token_index].ignore;
+						ga('send', 'event', 'MLR', 'ignoreToken');
 					},
 					ignoreAllToken: function(token_index) {
 						for (index = 0; index < this.text.tokenlist.length; ++index) {
@@ -459,6 +461,7 @@
 								this.text.tokenlist[index].ignore = true;
 							}
 						}
+						ga('send', 'event', 'MLR', 'ignoreAllToken');
 					}
 				}
 			});
