@@ -25,7 +25,7 @@ var Token = function(i_t, mlr) {
 	this.autoSelectLowestFactor = function(mlr) {
 		if (this.lemmas) {
 			var lowestIndex = 0;
-			for (index = 0; index < this.lemmas.length; ++index) {
+			for (let index = 0; index < this.lemmas.length; ++index) {
 				if ((mlr.lemmas[this.lemmas[index]] < mlr.lemmas[this.lemmas[lowestIndex]] || 
 					mlr.lemmas[this.lemmas[lowestIndex]] == 0) && mlr.lemmas[this.lemmas[index]] > 0) {
 					lowestIndex = index;
@@ -36,7 +36,7 @@ var Token = function(i_t, mlr) {
 	}
 }
 
-var Text = function(i_o = "", mlr) {
+var Text = function(mlr, i_o = "") {
 	this.parseText = function(text) {
 		// split text into words
 		var split = removeDiacritics(text).trim().toLowerCase().match(/[\w\'\*]+/g);
