@@ -43,7 +43,7 @@ var Text = function(mlr, i_o = "") {
 		
 		// store as a list of tokens with metadata
 		var t = [];
-		for (index = 0; split && index < split.length; ++index) { // for each word in the text
+		for (let index = 0; split && index < split.length; ++index) { // for each word in the text
 			t.push(new Token(split[index], mlr)); // add a token to the array
 		}
 		return t;
