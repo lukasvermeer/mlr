@@ -289,7 +289,7 @@
 				data: {
 					input: '',
 					mlr_data: { tokens: {}, lemmas: {} },
-					text: new Text(this.mlr_data, ""),
+					text: new Text("", this.mlr_data),
 					fatalErrors: [],
 					lists: ['0','1','2','3','4','5','6','7','8','9','known','total'], // enum of all lists.
 					listTitles: ['Onbekend','Lijst 1','Lijst 2','Lijst 3','Lijst 4','Lijst 5','Lijst 6','Lijst 7','Lijst 8','Lijst 9','Bekend','Totaal'], // titles for all lists.
@@ -298,7 +298,7 @@
 				watch: {
 					input: function(val) {
 						ga('send', 'event', 'MLR', 'input');
-						this.text = new Text(this.mlr_data, val);
+						this.text = new Text(val, this.mlr_data);
 						this.text.autoSelectLowestFactors(this.mlr_data);
 					}
 				},

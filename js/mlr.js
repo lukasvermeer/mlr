@@ -36,7 +36,7 @@ var Token = function(i_t, mlr) {
 	}
 }
 
-var Text = function(mlr, i_o = "") {
+var Text = function(i_o = "", mlr) {
 	this.parseText = function(text) {
 		// split text into words
 		var split = removeDiacritics(text).trim().toLowerCase().match(/[\w\'\*]+/g);
