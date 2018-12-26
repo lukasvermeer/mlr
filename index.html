@@ -299,7 +299,7 @@
 					input: function(val) {
 						ga('send', 'event', 'MLR', 'input');
 						this.text = new Text(val, this.mlr_data);
-						this.text.autoSelectLowestFactors(this.mlr_data);
+						this.text.autoSelectLowestFactors();
 					}
 				},
 				computed: {
